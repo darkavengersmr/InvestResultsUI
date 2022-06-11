@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import InvestmentListItem from "../investment-list-item"
-
-
 import "./investment-list.css"
 
 class InvestmentList extends Component {

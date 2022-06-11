@@ -1,10 +1,10 @@
 import React from "react";
 import './app-header.css'
 
-const AppHeader = () => {
+const AppHeader = ({ name }) => {
     return (
         <div className='app-header'>
-            Мои.Инвестиции
+            {name}
         </div>
     )
 }

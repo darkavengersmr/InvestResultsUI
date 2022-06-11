@@ -1,12 +1,16 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { LoginPage, InvestmentListPage } from '../pages';
+import { LoginPage, 
+         RegistrationPage, 
+         InvestmentListPage,
+         InvestmentDetailPage,
+         CategoriesListPage } from '../pages';
 import './app.css';
 
 
 const App = () => {
   return (
-    <div className="myapp">
+    <div className="myapp">    
     <Routes>
       <Route 
         path="/" 
@@ -15,6 +19,18 @@ const App = () => {
       <Route 
         path="/login"         
         element={<LoginPage />} />
+      <Route 
+        path="/register"         
+        element={<RegistrationPage />} />
+      <Route 
+        path="/investments/"
+        element={<InvestmentListPage />} />
+      <Route 
+        path="/investments/:id"
+        element={<InvestmentDetailPage />} />        
+      <Route 
+        path="/categories/"
+        element={<CategoriesListPage />} />      
     </Routes>
     </div>
   )

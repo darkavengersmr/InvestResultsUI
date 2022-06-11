@@ -1,0 +1,28 @@
+.investments-detail-item {
+    display: flex;
+    justify-content: space-between;
+    width: 320px;
+    height: 25px;
+    background-color: rgb(48, 48, 64);
+    border-radius: 5px;
+    margin: 0px 0px 5px 0px;
+    font-family: Arial, Helvetica, sans-serif;    
+    color: white;
+}
+
+.investments-detail-item {
+    display: flex;
+    justify-content: space-between;    
+}
+
+.investments-detail-item-date {
+    width: 80px;
+    padding-left: 5px;    
+}
+
+.investments-detail-item-sum {
+    width: 80px;
+    text-align: right;
+    padding-right: 5px;
+    
+}

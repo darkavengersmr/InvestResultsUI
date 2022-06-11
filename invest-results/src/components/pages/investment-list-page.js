@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 
-import InvestmentList from '../investment-list';
 import AppHeader from '../app-header';
+import InvestmentList from '../investment-list';
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
-import { investmentLoaded, investmentRequested, investmentError} from "../../redux-store/actions"
+import { investmentLoaded, investmentRequested, investmentError } from "../../redux-store/actions"
 import { withInvestResultsService } from "../hoc"
 import { compose } from "../../utils";
+import "./pages.css"
 
 class InvestmentListPage extends Component {
     
@@ -15,12 +16,12 @@ class InvestmentListPage extends Component {
         const  { investResultsService, 
                 investmentLoaded, 
                 investmentRequested, 
-                investmentError } = this.props;
+                investmentError } = this.props;        
         investmentRequested();
         investResultsService.getInvestments()
             .then((data) => investmentLoaded(data))
             .catch((error) => investmentError(error));
-    }
+}
 
     render() {
 
@@ -35,17 +36,20 @@ class InvestmentListPage extends Component {
         }
         
         return (
-            <div>
-                <AppHeader /> 
+            <div><div className="with-app-header">
+                    <div className="navigate-to-investments">&#128100;</div>   
+                    <AppHeader name="Мои.Инвестиции" />
+                </div>
                 <InvestmentList />
             </div>
         )}
 };
 
-const mapStateToProps = (state) => {    
+const mapStateToProps = (state) => { 
     return {
         loading: state.loading,
-        error: state.error
+        error: state.error,
+
     }
   }
 

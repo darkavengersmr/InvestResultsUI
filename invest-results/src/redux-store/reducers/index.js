@@ -1,4 +1,11 @@
+import { Cookies } from 'react-cookie';
+
+const cookies = new Cookies();
+const token = cookies.get('investresults_token');
+const user_id = cookies.get('investresults_user_id');
+
 const initialState = {
+    profile: {token: token, username: "", email: "", id: user_id},
     investments: [],
     history: [],
     inout: [],
@@ -98,6 +105,58 @@ const reducer = (state = initialState, action) => {
                 error: null
             };
 
+        case 'FETCH_PROFILE_REQUEST':
+            return {
+                ...state,
+                profile: {...state.profile, username: "", email: "", id: null},
+                loading: true,
+                error: null
+            };
+        case 'FETCH_PROFILE_FAILURE':
+            return {
+                ...state,
+                profile: {...state.profile, username: "", email: "", id: null},
+                loading: false,
+                error: action.payload
+            };
+        case 'FETCH_PROFILE_SUCCESS':
+            return {
+                ...state,
+                profile: {...state.profile, ...action.payload},
+                loading: false,
+                error: null
+            };
+
+        case 'FETCH_TOKEN_REQUEST':
+            return {
+                ...state,
+                profile: {...state.profile, token: ""},
+                loading: true,
+                error: null
+            };
+        case 'FETCH_TOKEN_FAILURE':
+            return {
+                ...state,
+                profile: {...state.profile, token: ""},
+                loading: false,
+                error: action.payload
+            };
+        case 'FETCH_TOKEN_SUCCESS':
+            return {
+                ...state,
+                profile: {...state.profile, token: action.payload},                
+                loading: false,
+                error: null
+            };
+
+        case 'LOGOUT':
+            return {
+                ...state,
+                profile: {username: "", email: "", id: null, token: ""},                
+                loading: false,
+                error: null
+            };
+            
         default:
             return state;
     }    

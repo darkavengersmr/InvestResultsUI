@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from "react-redux";
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux'
 
 import AppHeader from '../app-header';
 import InvestmentDetail from '../investment-detail';
@@ -8,105 +8,73 @@ import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
 import { investmentLoaded, investmentRequested, investmentError,
          historyRequested, historyLoaded, historyError, 
-         inOutRequested, inOutLoaded, inOutError } from "../../redux-store/actions"
-import { withInvestResultsService } from "../hoc"
-import { compose } from "../../utils";
-import "./pages.css"
+         inOutRequested, inOutLoaded, inOutError, userLogOut } from "../../redux-store/actions"
+import { ApiServiceContext } from "../invest-results-service-context";
 
-class InvestmentDetailPage extends Component {
-    
-    componentDidMount() {
-        const  { investResultsService,
-                investmentLoaded, investmentRequested, investmentError, 
-                historyRequested, historyLoaded, historyError,
-                inOutRequested, inOutLoaded, inOutError } = this.props;
-        const { id } = this.props.params;
+const InvestmentDetailPage = () => {
 
-        investmentRequested();
-        investResultsService.getInvestments()
-            .then((data) => investmentLoaded(data))
-            .catch((error) => investmentError(error));
+    const { id } = useParams();
+
+    const ApiService = useContext(ApiServiceContext);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const profile = useSelector((state) => state.profile);
+    const investments = useSelector((state) => state.investments);
+    const loading = useSelector((state) => state.loading);
+    const error = useSelector((state) => state.error);
+
+    useEffect(() => {
+        dispatch(investmentRequested());
+        ApiService.getInvestments({ token: profile.token, 
+                                    params: { user_id: profile.id }})
+            .then((response) => dispatch(investmentLoaded(response.data.investments)))
+            .catch((error) => dispatch(investmentError(error)));
         
-        historyRequested();
-        inOutRequested();
-        investResultsService.getHistory(id)
-            .then((data) => historyLoaded(data))
-            .catch((error) => historyError(error));
-        investResultsService.getInOut(id)
-            .then((data) => inOutLoaded(data))
-            .catch((error) => inOutError(error));
+        dispatch(historyRequested());
+        dispatch(inOutRequested());
+        ApiService.getHistory({ token: profile.token, 
+                                params: { user_id: profile.id, 
+                                          investment_id: id }})
+            .then((response) => dispatch(historyLoaded(response.data.history)))
+            .catch((error) => dispatch(historyError(error)));
+        ApiService.getInOut({ token: profile.token, 
+                              params: { user_id: profile.id, 
+                                        investment_id: id }})
+            .then((response) => dispatch(inOutLoaded(response.data.in_out)))
+            .catch((error) => {
+                dispatch(inOutError(error));
+                dispatch(investmentError(error));
+                dispatch(userLogOut());
+                navigate('/login');
+            });        
+    }, [ ApiService, dispatch, profile.token, profile.id, navigate, id ]);
+         
+    
+    if (loading) {            
+        return <Spinner />
     }
 
-    render() {
-
-        const { investments, loading, error} = this.props;
+    if (error) {            
+        return <ErrorIndicator />
+    }
+    
+    let description;
+    try {
+        const investment_item = investments.filter((investment_item) => 
+                                                    investment_item.id === parseInt(id));
         
-        const { id } = this.props.params;
-        const navigate = this.props.navigate;
-
-        if (loading) {            
-            return <Spinner />
-        }
-
-        if (error) {            
-            return <ErrorIndicator />
-        }
+        description = investment_item[0].description;       
         
-        let description;
-        try {
-          const investment_item = investments.filter((investment_item) => 
-                                                     investment_item.id == id);
-          description = investment_item[0].description;
-          
-        } catch {
-            return <ErrorIndicator />
-        }
-        
-        const navigateToInvestment = () => {
-            navigate('/investments');
-        }
+    } catch {
+        return <ErrorIndicator />
+    }
 
-        return (
-            <div>
-                
-                <div className="with-app-header" onClick={navigateToInvestment}>
-                    <div className="navigate-to-investments">&#5130;</div>                    
-                    <AppHeader name={description} />    
-                </div>
-                
-                <InvestmentDetail id={id} />
-            </div>
-        )}
+    return (
+        <>               
+            <AppHeader name={description} />    
+            <InvestmentDetail id={id} />
+        </>
+    )
 };
 
-const mapStateToProps = (state) => {    
-
-    return {
-        investments: state.investments,
-        loading: state.loading,
-        error: state.error,
-
-    }
-  }
-
-  const mapDispathToProps = {
-    investmentLoaded, 
-    investmentRequested, 
-    investmentError, 
-    historyRequested,
-    historyLoaded,
-    historyError,
-    inOutRequested,
-    inOutLoaded,
-    inOutError
-}
-
-export default compose(
-    withInvestResultsService(),
-    connect(mapStateToProps, mapDispathToProps)
-    )((props) => (        
-        <InvestmentDetailPage
-            {...props}
-            params={useParams()}
-            navigate={useNavigate()}
-   />));
+export default InvestmentDetailPage;

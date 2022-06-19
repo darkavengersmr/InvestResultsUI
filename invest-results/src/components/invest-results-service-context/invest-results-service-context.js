@@ -1,11 +1,7 @@
 import React from 'react';
 
-const {
-  Provider: InvestResultsServiceProvider,
-  Consumer: InvestResultsServiceConsumer
-} = React.createContext();
+const ApiServiceContext = React.createContext();
 
 export {
-  InvestResultsServiceProvider,
-  InvestResultsServiceConsumer
+  ApiServiceContext
 };

@@ -1,3 +1,4 @@
+
 const investmentLoaded = (newInvestment) => {    
     return {
         type: 'FETCH_INVESTMENTS_SUCCESS',
@@ -78,6 +79,54 @@ const categoriesError = (error) => {
     }
 }
 
+
+const profileLoaded = (data) => {    
+    return {
+        type: 'FETCH_PROFILE_SUCCESS',
+        payload: data
+    }
+}
+
+const profileRequested = () => {
+    return {
+        type: 'FETCH_PROFILE_REQUEST'
+    }
+}
+
+const profileError = (error) => {
+    return {
+        type: 'FETCH_PROFILE_FAILURE',
+        payload: error
+    }
+}
+
+
+const tokenLoaded = (data) => {
+    return {
+        type: 'FETCH_TOKEN_SUCCESS',
+        payload: data
+    }
+}
+
+const tokenRequested = () => {
+    return {
+        type: 'FETCH_TOKEN_REQUEST'
+    }
+}
+
+const tokenError = (error) => {
+    return {
+        type: 'FETCH_TOKEN_FAILURE',
+        payload: error
+    }
+}
+
+const userLogOut = () => {
+    return {
+        type: 'LOGOUT'
+    }
+}
+
 export {
     
     investmentRequested,
@@ -94,5 +143,15 @@ export {
 
     categoriesRequested,
     categoriesLoaded,
-    categoriesError
+    categoriesError,
+
+    profileRequested,
+    profileLoaded,
+    profileError,
+
+    tokenRequested,
+    tokenLoaded,
+    tokenError,
+
+    userLogOut
 }

@@ -1,9 +1,7 @@
 import {
-  InvestResultsServiceProvider,
-  InvestResultsServiceConsumer
+  ApiServiceContext
 } from './invest-results-service-context';
 
 export {
-  InvestResultsServiceProvider,
-  InvestResultsServiceConsumer
+  ApiServiceContext
 };

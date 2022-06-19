@@ -1,65 +1,51 @@
-import React, { Component } from 'react';
-import { connect } from "react-redux";
+import React, { useContext, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux'
 
 import AppHeader from '../app-header';
 import InvestmentList from '../investment-list';
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
-import { investmentLoaded, investmentRequested, investmentError } from "../../redux-store/actions"
-import { withInvestResultsService } from "../hoc"
-import { compose } from "../../utils";
-import "./pages.css"
+import { investmentLoaded, investmentRequested, investmentError, 
+         userLogOut } from "../../redux-store/actions"
+import { ApiServiceContext } from "../invest-results-service-context";
 
-class InvestmentListPage extends Component {
+const InvestmentListPage = () => {
     
-    componentDidMount() {
-        const  { investResultsService, 
-                investmentLoaded, 
-                investmentRequested, 
-                investmentError } = this.props;        
-        investmentRequested();
-        investResultsService.getInvestments()
-            .then((data) => investmentLoaded(data))
-            .catch((error) => investmentError(error));
-}
+    const ApiService = useContext(ApiServiceContext);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const profile = useSelector((state) => state.profile);
+    const loading = useSelector((state) => state.loading);
+    const error = useSelector((state) => state.error);
 
-    render() {
+    useEffect(() => {      
+        dispatch(investmentRequested());
 
-        const { loading, error } = this.props;                
+        ApiService.getInvestments({ token: profile.token, 
+                                    params: { user_id: profile.id }})
+            .then((response) => dispatch(investmentLoaded(response.data.investments)))
+            .catch((error) => {
+                dispatch(investmentError(error));
+                dispatch(userLogOut());
+                navigate('/login'); 
+            });
+    }, [ ApiService, dispatch, profile.token, profile.id, navigate ])            
 
-        if (loading) {            
-            return <Spinner />
-        }
+    if (loading) {            
+        return <Spinner />
+    }
 
-        if (error) {            
-            return <ErrorIndicator />
-        }
-        
-        return (
-            <div><div className="with-app-header">
-                    <div className="navigate-to-investments">&#128100;</div>   
-                    <AppHeader name="Мои.Инвестиции" />
-                </div>
-                <InvestmentList />
-            </div>
-        )}
+    if (error) {            
+        return <ErrorIndicator />
+    }
+    
+    return (
+            <>
+            <AppHeader name="Мои.Инвестиции" />               
+            <InvestmentList />
+            </>
+    )
 };
 
-const mapStateToProps = (state) => { 
-    return {
-        loading: state.loading,
-        error: state.error,
-
-    }
-  }
-
-  const mapDispathToProps = { 
-    investmentLoaded,
-    investmentRequested,
-    investmentError
-}
-
-export default compose(
-    withInvestResultsService(),
-    connect(mapStateToProps, mapDispathToProps)
-    )(InvestmentListPage);
+export default InvestmentListPage;

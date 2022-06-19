@@ -1,22 +1,32 @@
 import React from "react";
-import "./investment-detail-item.css";
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 
 const InvestmentListItem = ({ data, date }) => {    
     const { history, sum_in, sum_out } = data;
 
-    if (history != undefined && sum_in != undefined && sum_out != undefined) {
+    const tableCellStyle = { p: "8px 1px 8px 1px", fontSize: "0.9rem" };
+
     return (
-        <div className='investments-detail'>
-            <div className='investments-detail-item'>
-                <div className='investments-detail-item-date'>{date}</div>
-                <div className='investments-detail-item-sum'>{history.toLocaleString()}</div>
-                <div className='investments-detail-item-sum'>{sum_in.toLocaleString()}</div>
-                <div className='investments-detail-item-sum'>{sum_out.toLocaleString()}</div>
-            </div>                    
-        </div>    
+        <TableRow>            
+            <TableCell sx={tableCellStyle}>
+                {date}
+            </TableCell>
+            <TableCell sx={tableCellStyle} 
+                       align="right">
+                           {typeof history === 'number' ? history.toLocaleString() : "-"}
+            </TableCell>
+            <TableCell sx={tableCellStyle} 
+                       align="right">
+                           {typeof sum_in === 'number' ? sum_in.toLocaleString() : "-"}
+            </TableCell>
+            <TableCell sx={tableCellStyle} 
+                       align="right">
+                           {typeof sum_out === 'number' ? sum_out.toLocaleString() : "-"}
+            </TableCell>                    
+        </TableRow>  
     );
-    }
-    
+       
 };
 
 export default InvestmentListItem;

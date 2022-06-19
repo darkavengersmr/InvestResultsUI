@@ -1,46 +1,67 @@
 import React from 'react';
-
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import AppHeader from '../app-header';
-import "./pages.css"
 
 const RegistrationPage = () => {
-  return (<div> 
+
+  const handleClickDemo = () => {    
+    
+    };
+
+  return (<> 
       <AppHeader name="Мои.Инвестиции" />     
-      <div className="form">
-        <div className="form-string">
-            Логин
-            <input
-                className="input"
-                type="text"                
-            />
-        </div>
-        <div className="form-string">
-            E-mail
-            <input
-                className="input"
-                type="text"                
-            />
-        </div>
-        <div className="form-string">
-            Пароль
-            <input
-                className="input"
-                type="password"        
-            />
-        </div>
-        <div className="form-string">
-            Приглашение
-            <input
-                className="input"
-                type="text"                
-            />
-        </div>
-        <div className="form-string center">            
-            <button className="btn btn-success button">Регистрация</button>
-            <button className="btn btn-danger button">Демо-режим</button>
-        </div>
-    </div>      
-  </div>
+      <Container sx={{ mt: "2rem", width: 320 }}>
+        <TextField
+                        autoFocus
+                        margin="dense"                    
+                        label="Логин"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                    />
+        <TextField
+                    autoFocus
+                    margin="dense"                    
+                    label="Email"
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                />
+        <TextField
+                    autoFocus
+                    margin="dense"                    
+                    label="Пароль"
+                    type="password"
+                    fullWidth
+                    variant="standard"
+                />
+        <TextField
+                    autoFocus
+                    margin="dense"                    
+                    label="Приглашение"
+                    type="password"
+                    fullWidth
+                    variant="standard"
+                />
+  
+        <Grid container                  
+                  sx={{ mt: "2rem" }}
+                  direction="column"                                 
+                  >
+            <Button variant='contained'>
+                Регистрация
+            </Button>
+            <Button onClick={handleClickDemo} 
+                    sx={{ mt: "1rem" }}
+                    variant="outlined">
+                Демо-режим
+            </Button>
+        </Grid>    
+    </Container>
+    </>
 )};
 
 export default RegistrationPage;

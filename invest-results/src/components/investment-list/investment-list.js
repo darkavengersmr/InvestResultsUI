@@ -1,34 +1,24 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from 'react-redux'
+import Container from '@mui/material/Container';
 
 import InvestmentListItem from "../investment-list-item"
-import "./investment-list.css"
 
-class InvestmentList extends Component {
+const InvestmentList = () => {
 
-    render() {
-        const { investments } = this.props;        
-        return (
-            <div>
-                {
-                investments.map((investment) => {
-                    return (
-                        <div key={investment.id}>
-                            <InvestmentListItem investment={investment} />
-                        </div>
-                    )
+    const investments = useSelector((state) => state.investments);
+  
+    return (
+        <>
+        <Container sx={{ width: 360 }}>
+            {
+            investments.map((investment) => {
+                return <InvestmentListItem key={investment.id} investment={investment} />
                 })
             }
-            </div>
-        );
-    }
+        </Container>
+        </>
+    );
 }
 
-const mapStateToProps = (state) => {    
-    return {
-        investments: state.investments
-    }
-}
-
-
-export default connect(mapStateToProps)(InvestmentList);
+export default InvestmentList;

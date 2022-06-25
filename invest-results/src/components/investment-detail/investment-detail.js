@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux'
-import { useParams } from "react-router-dom";
 import Container from '@mui/material/Container';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,19 +8,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
 import Typography from '@mui/material/Typography';
-
 import Grid from '@mui/material/Grid';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 
 import InvestmentDetailItem from "../investment-detail-item"
+import DialogModal from '../dialog-modal';
 
-const InvestmentDetail = () => {
+const InvestmentDetail = ({ id, addHistory, addInOut }) => {
 
     const [ openHistory, setOpenHistory ] = useState(false);
     const [ openDeposit, setOpenDeposit ] = useState(false);
@@ -31,76 +23,58 @@ const InvestmentDetail = () => {
     const history = useSelector((state) => state.history);
     const inout = useSelector((state) => state.inout);
 
-    const { id } = useParams();
-
     const handleClickOpenHistory = () => {
         setOpenHistory(true);
     };
+
     const handleCloseHistory = () => {
         setOpenHistory(false);
     };
 
+    const handleAddHistory = (sum) => {        
+        addHistory(sum);
+        setOpenHistory(false);
+    }
+
     const handleClickOpenDeposit = () => {
         setOpenDeposit(true);
     };
+
     const handleCloseDeposit = () => {
         setOpenDeposit(false);
     };
 
+    const handleAddDeposit = (sum, comment) => {
+        if (sum > 0 && comment.length > 0) {
+            addInOut(sum, comment);
+            setOpenDeposit(false);
+        }
+        
+    }
+
     const handleClickOpenCredit = () => {
         setOpenCredit(true);
     };
+
     const handleCloseCredit = () => {
         setOpenCredit(false);
     };
 
-    const renderDialog = (triggerToOpen, 
-                    funcToClose,
-                    dialogTitle,
-                    dialogContentText
-                    ) => {
-        return (
-            <Dialog open={triggerToOpen} 
-                    onClose={funcToClose}
-                    >
-                <DialogTitle>{dialogTitle}</DialogTitle>
-                <DialogContent>
-                <DialogContentText>
-                    {dialogContentText}
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Сумма"
-                    type="number"
-                    fullWidth
-                    variant="standard"
-                />
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Комментарий"
-                    type="text"
-                    fullWidth
-                    variant="standard"
-                />
-                </DialogContent>
-                <DialogActions>
-                <Button onClick={funcToClose}>Отмена</Button>
-                <Button onClick={funcToClose}>Внести</Button>
-                </DialogActions>
-            </Dialog>
-        )
+    const handleAddCredit = (sum, comment) => {
+        if (sum > 0 && comment.length > 0) {
+            addInOut(-sum, comment);
+            setOpenCredit(false);
+        }
     }
 
     const investment_detail_item = {}
+    const investment_detail_total = {history: null, sum_in: 0, sum_out: 0}
 
     history.forEach((element) => {        
         if (element.investment_id === parseInt(id)) {
             const date = element.date.slice(0,7);                
-            investment_detail_item[date] = {history: element.sum}                
+            investment_detail_item[date] = {history: element.sum}
+            investment_detail_total.history = element.sum;
         }
     });
     
@@ -116,10 +90,12 @@ const InvestmentDetail = () => {
             if (!investment_detail_item[date].sum_out) {
                 investment_detail_item[date].sum_out = 0;
             }
-            if (element.sum >= 0) {                        
-                investment_detail_item[date].sum_in += element.sum                        
+            if (element.sum >= 0) {                                        
+                investment_detail_item[date].sum_in += element.sum;
+                investment_detail_total.sum_in += element.sum;
             } else {
-                investment_detail_item[date].sum_out += -1 * element.sum                        
+                investment_detail_item[date].sum_out += -1 * element.sum;
+                investment_detail_total.sum_out += -1 * element.sum;
             }                    
         }
         
@@ -134,7 +110,8 @@ const InvestmentDetail = () => {
         </Container>
     )};
 
-    const tableCellStyle = { p: "4px", fontSize: "1rem" };
+    const tableHeadStyle = { p: "4px", fontSize: "1rem" };
+    const tableCellStyle = { p: "8px 1px 8px 1px", fontSize: "0.8rem" };
 
     return (
         <>
@@ -143,19 +120,19 @@ const InvestmentDetail = () => {
             <Table aria-label="simple table">
                 <TableBody>
                     <TableRow>
-                        <TableCell sx={tableCellStyle} 
+                        <TableCell sx={tableHeadStyle} 
                                     align="center">
                             Дата
                         </TableCell>
-                        <TableCell sx={tableCellStyle} 
+                        <TableCell sx={tableHeadStyle} 
                                     align="right">
                                         Сумма
                         </TableCell>
-                        <TableCell sx={tableCellStyle}
+                        <TableCell sx={tableHeadStyle}
                                     align="right">
                                         Приход
                         </TableCell>
-                        <TableCell sx={tableCellStyle}
+                        <TableCell sx={tableHeadStyle}
                                     align="right">
                                         Расход
                         </TableCell>
@@ -167,7 +144,25 @@ const InvestmentDetail = () => {
                                         date={key} 
                                         data={investment_detail_item[key]}/>
                             })
-                        }                        
+                        }
+                    <TableRow>
+                        <TableCell sx={tableHeadStyle} 
+                                    align="center">
+                            Итого
+                        </TableCell>
+                        <TableCell sx={tableCellStyle} align="right">
+                            {typeof investment_detail_total.history === 'number' ? investment_detail_total.history.toLocaleString() : "-"}
+                                        {}
+                        </TableCell>
+                        <TableCell sx={tableCellStyle}
+                                    align="right">
+                                        {investment_detail_total.sum_in.toLocaleString()}
+                        </TableCell>
+                        <TableCell sx={tableCellStyle}
+                                    align="right">
+                                        {investment_detail_total.sum_out.toLocaleString()}
+                        </TableCell>
+                    </TableRow>                        
                 </TableBody>
             </Table>
         </TableContainer>
@@ -181,7 +176,7 @@ const InvestmentDetail = () => {
                 Зафиксировать сумму
             </Button>
         </Grid>
-        <Container sx={{ mt: "1rem", width: 320 }} align="center">
+        <Container sx={{ mt: "1rem", mb: "2rem", width: 320 }} align="center">
             <Button variant="outlined" 
                     onClick={handleClickOpenDeposit}                        
                     sx={{ mr: "0.25rem"}}>
@@ -194,23 +189,28 @@ const InvestmentDetail = () => {
             </Button>
         </Container>
 
-        {renderDialog(openHistory, 
-                        handleCloseHistory,
-                        "Зафиксировать сумму",
-                        "Введите сумму для фиксации на текущую дату"
-        )}
+        <DialogModal triggerToOpen={openHistory} 
+                     funcToCloseOk={handleAddHistory}
+                     funcToCloseCancel={handleCloseHistory}
+                     dialogTitle="Зафиксировать"
+                     dialogContentText="Введите сумму для фиксации на текущую дату"
+        />
 
-        {renderDialog(openDeposit, 
-                        handleCloseDeposit,
-                        "Внести сумму",
-                        "Введите вносимую сумму и комментарий"
-        )}
+        <DialogModal triggerToOpen={openDeposit} 
+                     funcToCloseOk={handleAddDeposit}
+                     funcToCloseCancel={handleCloseDeposit}
+                     dialogTitle="Внести"
+                     dialogContentText="Введите вносимую сумму и комментарий"
+                     commentNeed
+        />
 
-        {renderDialog(openCredit, 
-                        handleCloseCredit,
-                        "Снять сумму",
-                        "Введите снимаемую сумму и комментарий"
-        )}
+        <DialogModal triggerToOpen={openCredit} 
+                     funcToCloseOk={handleAddCredit}
+                     funcToCloseCancel={handleCloseCredit}
+                     dialogTitle="Снять"
+                     dialogContentText="Введите снимаемую сумму и комментарий"
+                     commentNeed
+        />
         </>
     );  
 }

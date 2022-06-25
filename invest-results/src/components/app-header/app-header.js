@@ -42,6 +42,10 @@ function AppHeader({ name }) {
     navigate(`/profile`);
   }
 
+  const navigateToReports = () => {
+    navigate(`/reports`);
+  }
+
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -110,7 +114,7 @@ function AppHeader({ name }) {
               <ListItemText primary="Категории инвестиций" />
             </ListItemButton>
           </ListItem>
-          <ListItem >
+          <ListItem onClick={navigateToReports}>
             <ListItemButton>
               <ListItemIcon>
                 <AssessmentIcon />
@@ -128,7 +132,15 @@ function AppHeader({ name }) {
           </ListItem>
       </List>
       <Divider />
-      <List>        
+      <List>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon>
+                <AccountBoxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Настройки" />
+            </ListItemButton>
+          </ListItem>        
           <ListItem onClick={navigateToProfile}>
             <ListItemButton>
               <ListItemIcon>

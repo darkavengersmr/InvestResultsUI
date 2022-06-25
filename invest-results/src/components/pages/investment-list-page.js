@@ -15,6 +15,7 @@ const InvestmentListPage = () => {
     const ApiService = useContext(ApiServiceContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const investments = useSelector((state) => state.investments);
     const profile = useSelector((state) => state.profile);
     const loading = useSelector((state) => state.loading);
     const error = useSelector((state) => state.error);
@@ -43,7 +44,7 @@ const InvestmentListPage = () => {
     return (
             <>
             <AppHeader name="Мои.Инвестиции" />               
-            <InvestmentList />
+            <InvestmentList investments={investments}/>
             </>
     )
 };

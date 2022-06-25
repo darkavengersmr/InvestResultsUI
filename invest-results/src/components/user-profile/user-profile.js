@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 import Container from '@mui/material/Container';
@@ -14,9 +14,8 @@ import Grid from '@mui/material/Grid';
 
 import { userLogOut } from "../../redux-store/actions";
 
-const UserProfile = () => {
+const UserProfile = ({ profile }) => {
     
-    const profile = useSelector((state) => state.profile) 
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const [, , removeCookie] = useCookies();

@@ -16,6 +16,7 @@ const CategoriesListPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const profile = useSelector((state) => state.profile);
+    const categories = useSelector((state) => state.categories)    
     const loading = useSelector((state) => state.loading);
     const error = useSelector((state) => state.error);
 
@@ -31,6 +32,27 @@ const CategoriesListPage = () => {
             });
     }, [ ApiService, dispatch, navigate, profile.token, profile.id ]);
 
+    const addCategory = (newCategory) => {
+        dispatch(categoriesRequested());
+        ApiService.createCategory({ token: profile.token, 
+                                   params: { user_id: profile.id },
+                                   data: { category: newCategory } 
+                                })
+        .then(() => ApiService.getCategories({ token: profile.token, 
+                                               params: { user_id: profile.id }})
+        .then((response) => dispatch(categoriesLoaded(response.data.categories))))
+    }
+
+    const delCategory = (idCategory) => {
+        dispatch(categoriesRequested());
+        ApiService.deleteCategory({ token: profile.token, 
+                    params: { user_id: profile.id, category_id: idCategory }
+                })
+        .then(() => ApiService.getCategories({ token: profile.token, 
+                                               params: { user_id: profile.id }})
+        .then((response) => dispatch(categoriesLoaded(response.data.categories))))
+    }
+
     if (loading) {            
         return <Spinner />
     }
@@ -42,7 +64,10 @@ const CategoriesListPage = () => {
     return (
         <div>
             <AppHeader name="Категории инвестиций"/>
-            <CategoriesList />
+            <CategoriesList categories={categories}
+                            onAddCategory={addCategory}
+                            onDelCategory={delCategory}
+                            />
         </div>
     )
 };

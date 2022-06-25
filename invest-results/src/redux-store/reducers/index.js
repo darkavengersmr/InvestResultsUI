@@ -10,6 +10,7 @@ const initialState = {
     history: [],
     inout: [],
     categories: [],
+    report: [],
     loading: false,
     error: null,    
 }
@@ -60,6 +61,13 @@ const reducer = (state = initialState, action) => {
                 loading: false,
                 error: null
             };
+        case 'ADD_TO_HISTORY':            
+            return {
+                ...state,
+                history: [...state.history, action.payload],
+                loading: false,
+                error: null
+            };
 
         case 'FETCH_INOUT_REQUEST':
             return {
@@ -79,6 +87,13 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 inout: action.payload,
+                loading: false,
+                error: null
+            };
+        case 'ADD_TO_INOUT':            
+            return {
+                ...state,
+                inout: [...state.inout, action.payload],
                 loading: false,
                 error: null
             };
@@ -156,7 +171,29 @@ const reducer = (state = initialState, action) => {
                 loading: false,
                 error: null
             };
-            
+
+        case 'FETCH_REPORT_REQUEST':            
+            return {
+                ...state,
+                report: [],
+                loading: true,
+                error: null
+            };
+        case 'FETCH_REPORT_FAILURE':
+            return {
+                ...state,
+                report: [],
+                loading: false,
+                error: action.payload
+            };
+        case 'FETCH_REPORT_SUCCESS':
+            return {
+                ...state,
+                report: action.payload,
+                loading: false,
+                error: null
+            };
+
         default:
             return state;
     }    

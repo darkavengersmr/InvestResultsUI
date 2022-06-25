@@ -46,6 +46,13 @@ const inOutLoaded = (newInOut) => {
     }
 }
 
+const historyAdd = (newHistory) => {
+    return {
+        type: 'ADD_TO_HISTORY',
+        payload: newHistory
+    }
+}
+
 const inOutRequested = () => {
     return {
         type: 'FETCH_INOUT_REQUEST'
@@ -56,6 +63,13 @@ const inOutError = (error) => {
     return {
         type: 'FETCH_INOUT_FAILURE',
         payload: error
+    }
+}
+
+const inOutAdd = (newInOut) => {
+    return {
+        type: 'ADD_TO_INOUT',
+        payload: newInOut
     }
 }
 
@@ -127,6 +141,26 @@ const userLogOut = () => {
     }
 }
 
+const reportLoaded = (newReport) => {    
+    return {
+        type: 'FETCH_REPORT_SUCCESS',
+        payload: newReport
+    }
+}
+
+const reportRequested = () => {
+    return {
+        type: 'FETCH_REPORT_REQUEST'
+    }
+}
+
+const reportError = (error) => {
+    return {
+        type: 'FETCH_REPORT_FAILURE',
+        payload: error
+    }
+}
+
 export {
     
     investmentRequested,
@@ -136,10 +170,12 @@ export {
     historyRequested,
     historyLoaded,
     historyError,
+    historyAdd,
 
     inOutRequested,
     inOutLoaded,
     inOutError,
+    inOutAdd,
 
     categoriesRequested,
     categoriesLoaded,
@@ -152,6 +188,10 @@ export {
     tokenRequested,
     tokenLoaded,
     tokenError,
+
+    reportRequested,
+    reportLoaded,
+    reportError,
 
     userLogOut
 }

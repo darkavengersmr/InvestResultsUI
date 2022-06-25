@@ -9,7 +9,8 @@ import { LoginPage,
          InvestmentListPage,
          InvestmentDetailPage,
          CategoriesListPage,
-         UserProfilePage } from '../pages';
+         UserProfilePage,
+         ReportsPage } from '../pages';
 
 const darkTheme = createTheme({
   palette: {
@@ -43,7 +44,13 @@ const App = () => {
             element={<InvestmentDetailPage />} />        
           <Route 
             path="/categories/"
-            element={<CategoriesListPage />} />
+            element={<CategoriesListPage />} />          
+          <Route 
+            path="/reports/:id"
+            element={<ReportsPage />} />  
+          <Route 
+            path="/reports/"
+            element={<ReportsPage />} />  
           <Route 
             path="/profile/"
             element={<UserProfilePage />} />      

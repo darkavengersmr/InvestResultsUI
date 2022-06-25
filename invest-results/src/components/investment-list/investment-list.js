@@ -1,13 +1,9 @@
 import React from "react";
-import { useSelector } from 'react-redux'
 import Container from '@mui/material/Container';
 
 import InvestmentListItem from "../investment-list-item"
 
-const InvestmentList = () => {
-
-    const investments = useSelector((state) => state.investments);
-  
+const InvestmentList = ({ investments }) => {
     return (
         <>
         <Container sx={{ width: 360 }}>

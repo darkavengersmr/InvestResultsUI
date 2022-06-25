@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSelector } from 'react-redux'
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -16,11 +15,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import CategoriesListItem from "../categories-list-item"
 
-const CategoriesList = () => {
+const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
 
-    const categories = useSelector((state) => state.categories)
-
-    const [ open, setOpen ] = useState(false);    
+    const [ open, setOpen ] = useState(false);
+    const [ newCategory, setNewCategory ] = useState("");    
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -28,7 +26,12 @@ const CategoriesList = () => {
     const handleClose = () => {
         setOpen(false);
     };
-  
+
+    const handleAdd = () => {
+        onAddCategory(newCategory)
+        setOpen(false);
+    };
+
     return (
         <>
         <Container sx={{ mt: "1rem", width: 360 }}>
@@ -40,7 +43,9 @@ const CategoriesList = () => {
                                 return (
                                         <CategoriesListItem 
                                             key={category.id} 
-                                            category_item={category} />
+                                            category_item={category}
+                                            id={category.id} 
+                                            onDelCategory={onDelCategory} />
                                 )
                             })
                         }            
@@ -57,6 +62,7 @@ const CategoriesList = () => {
                 Добавить категорию
             </Button>
         </Grid>
+
         <Dialog open={open} 
                 onClose={handleClose}
                 >
@@ -73,11 +79,12 @@ const CategoriesList = () => {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={(e) => setNewCategory(e.target.value) }
             />
             </DialogContent>
             <DialogActions>
             <Button onClick={handleClose}>Отмена</Button>
-            <Button onClick={handleClose}>Добавить</Button>
+            <Button onClick={handleAdd}>Добавить</Button>
             </DialogActions>
         </Dialog>
         </>

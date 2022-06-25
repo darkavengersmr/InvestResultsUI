@@ -7,8 +7,9 @@ import InvestmentDetail from '../investment-detail';
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
 import { investmentLoaded, investmentRequested, investmentError,
-         historyRequested, historyLoaded, historyError, 
-         inOutRequested, inOutLoaded, inOutError, userLogOut } from "../../redux-store/actions"
+         historyRequested, historyLoaded, historyError, historyAdd, 
+         inOutRequested, inOutLoaded, inOutError, inOutAdd,
+         userLogOut } from "../../redux-store/actions"
 import { ApiServiceContext } from "../invest-results-service-context";
 
 const InvestmentDetailPage = () => {
@@ -48,8 +49,25 @@ const InvestmentDetailPage = () => {
                 navigate('/login');
             });        
     }, [ ApiService, dispatch, profile.token, profile.id, navigate, id ]);
-         
     
+    const addHistory = (sum) => {        
+        ApiService.createHistory({ token: profile.token, 
+                                   params: { user_id: profile.id },
+                                   data: { investment_id: id, sum: sum } 
+                                })
+        .then((response) => dispatch(historyAdd(response.data)))
+        .catch((error) => dispatch(historyError(error)));
+    }
+    
+    const addInOut = (sum, comment) => {
+        ApiService.createInOut({ token: profile.token, 
+            params: { user_id: profile.id },
+            data: { investment_id: id, sum: sum, description: comment } 
+         })
+        .then((response) => dispatch(inOutAdd(response.data)))
+        .catch((error) => dispatch(inOutError(error)));
+    }
+
     if (loading) {            
         return <Spinner />
     }
@@ -66,13 +84,13 @@ const InvestmentDetailPage = () => {
         description = investment_item[0].description;       
         
     } catch {
-        return <ErrorIndicator />
+        return <Spinner />
     }
 
     return (
         <>               
             <AppHeader name={description} />    
-            <InvestmentDetail id={id} />
+            <InvestmentDetail id={id} addHistory={addHistory} addInOut={addInOut} />
         </>
     )
 };

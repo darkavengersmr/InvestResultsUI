@@ -5,46 +5,58 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 
 const InvestmentListItem = ({ investment }) => {
-    const { id, description } = investment;
+
+    const { id, description, sum, category, proc } = investment;
 
     let navigate = useNavigate();
 
     const navigateToDetail = () => {
         navigate(`/investments/${id}`);
-    }
+    }    
 
-    const sum = 100000;
-    const ratio = 8;
     return (
+        <>
         <Card sx={{ mt: "1rem", width: 320 }}>
             <CardContent sx={{ pr: "1rem", pl: "1rem"}}>
-                <Typography sx={{ fontSize: 14 }} 
+                <Typography sx={{ fontSize: 14, mb: 0 }} 
                             color="text.secondary"                             
                             gutterBottom>
-                Категория
+                {category}
                 </Typography>
                 <Typography variant="h6" component="div">
                 {description}
                 </Typography>
-                <Typography color="text.secondary" align="right">
-                {ratio}% годовых
-                </Typography>
-                <Typography variant="h5" component="div" align="right">
-                {sum.toLocaleString()}
-                </Typography>
+                
+                <Grid container alignItems="flex-end">
+                    <Grid sx={{ width: 140 }} >
+                        <CardActions sx={{ p: 0 }}>
+                            <Button size="small" sx={{ p: 0 }}
+                                    onClick={navigateToDetail}>
+                                    Подробнее
+                            </Button>
+                        </CardActions>
+                    </Grid>
+                    <Grid sx={{ width: 140 }}>
+                        {proc > 0 ?
+                        <Typography color="#00FF00" align="right">
+                        {proc}%
+                        </Typography> :
+                        <Typography color="#FF0000" align="right">
+                        {proc}%
+                        </Typography>
+                        }                        
+                        <Typography variant="h5" component="div" align="right">
+                        {sum.toLocaleString()}
+                        </Typography>
+                    </Grid>
+                </Grid>
             </CardContent>
-            <CardActions>
-                <Button size="small" 
-                        variant='contained' 
-                        onClick={navigateToDetail}>
-                            Подробнее
-                </Button>
-                <Button size="small" variant="outlined">Пополнить</Button>
-                <Button size="small" variant="outlined">Снять</Button>
-            </CardActions>
+            
         </Card>
+        </>
     );
 };
 

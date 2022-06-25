@@ -45,8 +45,32 @@ export default class ApiService {
             "Authorization": "Bearer " + token
         },
         params: params 
-      })
-        
+      })        
+    }
+
+    createCategory({ token, params, data }) {
+      return axios({
+        method: 'post',
+          url: "/users/categories/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params,
+        data: data 
+      })        
+    }
+
+    deleteCategory({ token, params, }) {
+      return axios({
+        method: 'delete',
+          url: "/users/categories/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params
+      })        
     }
 
     getHistory({ token, params }) {
@@ -61,6 +85,19 @@ export default class ApiService {
       })
     }
 
+    createHistory({ token, params, data }) {
+      return axios({
+        method: 'post',
+          url: "/users/investment_history/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params,
+        data: data 
+      })        
+    }
+
     getInOut({ token, params }) {
       return axios({
         method: 'get',
@@ -72,5 +109,42 @@ export default class ApiService {
         params: params 
       })
     }
+
+    createInOut({ token, params, data }) {
+      return axios({
+        method: 'post',
+          url: "/users/investment_inout/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params,
+        data: data 
+      })        
+    }
+
+    getJSONReports({ token, params }) {        
+      return axios({
+        method: 'get',
+          url: "/users/reports/json/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params 
+      })
+    };
+
+    getXLSXReports({ token, params }) {        
+      return axios({
+        method: 'get',
+          url: "/users/reports/xlsx/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params 
+      })
+    };
 
 }

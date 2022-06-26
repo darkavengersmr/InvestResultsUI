@@ -82,7 +82,7 @@ const Reports = ({ report, id }) => {
           {
             data: index,
             label: "индекс",
-            borderColor: "#ffff00",
+            borderColor: "#ff0000",
             fill: true,
             lineTension: 0.5
           },

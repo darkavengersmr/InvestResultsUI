@@ -3,14 +3,28 @@ import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
 const token = cookies.get('investresults_token');
 const user_id = cookies.get('investresults_user_id');
+let theme = cookies.get('investresults_theme');
+let only_active_visible = cookies.get('investresults_only_active_visible');
+
+if (only_active_visible === undefined || only_active_visible === 'true') {
+    only_active_visible = true;
+} else {
+    only_active_visible = false;
+}
+
+if (theme === undefined ) {
+    theme = 'dark';
+} 
 
 const initialState = {
     profile: {token: token, username: "", email: "", id: user_id},
+    theme: theme,
     investments: [],
     history: [],
     inout: [],
     categories: [],
     report: [],
+    only_active_visible: only_active_visible,
     loading: false,
     error: null,    
 }
@@ -172,6 +186,18 @@ const reducer = (state = initialState, action) => {
                 error: null
             };
 
+        case 'SET_THEME':
+            return {
+                ...state,
+                theme: action.payload                
+            };
+
+        case 'SET_ONLY_ACTIVE_VISIBLE':
+            return {
+                ...state,
+                only_active_visible: action.payload                
+            };
+            
         case 'FETCH_REPORT_REQUEST':            
             return {
                 ...state,

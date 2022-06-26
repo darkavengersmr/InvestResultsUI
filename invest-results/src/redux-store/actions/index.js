@@ -161,6 +161,20 @@ const reportError = (error) => {
     }
 }
 
+const setTheme = (newTheme) => {    
+    return {
+        type: 'SET_THEME',
+        payload: newTheme
+    }
+}
+
+const setOnlyActiveVisible = (newSetting) => {    
+    return {
+        type: 'SET_ONLY_ACTIVE_VISIBLE',
+        payload: newSetting
+    }
+}
+
 export {
     
     investmentRequested,
@@ -193,5 +207,7 @@ export {
     reportLoaded,
     reportError,
 
-    userLogOut
+    userLogOut,
+    setTheme,
+    setOnlyActiveVisible
 }

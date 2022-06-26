@@ -5,6 +5,7 @@ import InvestmentDetailPage from "./investment-detail-page";
 import CategoriesListPage from "./categories-list-page";
 import UserProfilePage from "./user-profile-page";
 import ReportsPage from "./reports-page";
+import SettingsPage from "./settings-page";
 
 export {
     LoginPage,
@@ -13,5 +14,6 @@ export {
     InvestmentDetailPage,
     CategoriesListPage,
     UserProfilePage,
-    ReportsPage
+    ReportsPage,
+    SettingsPage
 }

@@ -15,22 +15,24 @@ const CategoriesListPage = () => {
     const ApiService = useContext(ApiServiceContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const profile = useSelector((state) => state.profile);
-    const categories = useSelector((state) => state.categories)    
-    const loading = useSelector((state) => state.loading);
-    const error = useSelector((state) => state.error);
+
+    const { categories,
+            profile,
+            loading,
+            error } = useSelector((state) => state);
 
     useEffect(() => {
-        
-        dispatch(categoriesRequested());
-        ApiService.getCategories({ token: profile.token, 
-                                   params: { user_id: profile.id }})
-            .then((response) => dispatch(categoriesLoaded(response.data.categories)))
-            .catch((error) => { dispatch(categoriesError(error));
-                                dispatch(userLogOut());
-                                navigate('/login'); 
-            });
-    }, [ ApiService, dispatch, navigate, profile.token, profile.id ]);
+        if (categories.length === 0) { 
+            dispatch(categoriesRequested());
+            ApiService.getCategories({ token: profile.token, 
+                                    params: { user_id: profile.id }})
+                .then((response) => dispatch(categoriesLoaded(response.data.categories)))
+                .catch((error) => { dispatch(categoriesError(error));
+                                    dispatch(userLogOut());
+                                    navigate('/login'); 
+                });
+        }
+    }, [ ApiService, dispatch, navigate, profile.token, profile.id, categories.length ]);
 
     const addCategory = (newCategory) => {
         dispatch(categoriesRequested());
@@ -38,9 +40,10 @@ const CategoriesListPage = () => {
                                    params: { user_id: profile.id },
                                    data: { category: newCategory } 
                                 })
-        .then(() => ApiService.getCategories({ token: profile.token, 
-                                               params: { user_id: profile.id }})
-        .then((response) => dispatch(categoriesLoaded(response.data.categories))))
+        .then((response) => { const updated_categories = [...categories, response.data]
+            console.log(updated_categories);
+            dispatch(categoriesLoaded(updated_categories));
+        });
     }
 
     const delCategory = (idCategory) => {

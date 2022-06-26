@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CookiesProvider } from 'react-cookie';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,7 +11,8 @@ import { LoginPage,
          InvestmentDetailPage,
          CategoriesListPage,
          UserProfilePage,
-         ReportsPage } from '../pages';
+         ReportsPage,
+         SettingsPage } from '../pages';
 
 const darkTheme = createTheme({
   palette: {
@@ -18,10 +20,19 @@ const darkTheme = createTheme({
   },
 });
 
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light', 
+  },
+});
+
 const App = () => {
 
+  const { theme } = useSelector((state) => state);
+
   return (    
-    <ThemeProvider theme={darkTheme}>  
+       
+    <ThemeProvider theme={ theme === 'dark' ? darkTheme : lightTheme}> 
       <CookiesProvider>
         <CssBaseline />
         <div className="myapp">    
@@ -51,6 +62,9 @@ const App = () => {
           <Route 
             path="/reports/"
             element={<ReportsPage />} />  
+          <Route 
+            path="/settings"
+            element={<SettingsPage />} />  
           <Route 
             path="/profile/"
             element={<UserProfilePage />} />      

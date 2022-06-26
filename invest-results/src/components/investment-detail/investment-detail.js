@@ -152,8 +152,7 @@ const InvestmentDetail = ({ id, addHistory, addInOut }) => {
                         </TableCell>
                         <TableCell sx={tableCellStyle} align="right">
                             {typeof investment_detail_total.history === 'number' ? investment_detail_total.history.toLocaleString() : "-"}
-                                        {}
-                        </TableCell>
+                                 </TableCell>
                         <TableCell sx={tableCellStyle}
                                     align="right">
                                         {investment_detail_total.sum_in.toLocaleString()}

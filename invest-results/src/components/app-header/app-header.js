@@ -46,6 +46,10 @@ function AppHeader({ name }) {
     navigate(`/reports`);
   }
 
+  const navigateToSettings = () => {
+    navigate(`/settings`);
+  }
+
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -133,7 +137,7 @@ function AppHeader({ name }) {
       </List>
       <Divider />
       <List>
-          <ListItem>
+          <ListItem onClick={navigateToSettings}>
             <ListItemButton>
               <ListItemIcon>
                 <AccountBoxIcon />

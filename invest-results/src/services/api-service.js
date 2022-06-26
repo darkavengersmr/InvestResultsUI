@@ -36,6 +36,19 @@ export default class ApiService {
       })
     };
 
+    createInvestment({ token, params, data }) {
+      return axios({
+        method: 'post',
+          url: "/users/investment_items/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params,
+        data: data 
+      })        
+    }
+
     getCategories({ token, params }) {
       return axios({
         method: 'get',

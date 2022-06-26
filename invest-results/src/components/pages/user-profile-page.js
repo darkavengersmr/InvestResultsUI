@@ -14,20 +14,23 @@ const UserProfilePage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const profile = useSelector((state) => state.profile);
-    const loading = useSelector((state) => state.loading);
-    const error = useSelector((state) => state.error);
+    const { profile,
+            loading,
+            error } = useSelector((state) => state);
 
-    useEffect(() => {
-        dispatch(profileRequested());        
-        ApiService.getUserProfile({ token: profile.token })
-            .then((response) => dispatch(profileLoaded(response.data)))
-            .catch((error) => {
-                dispatch(profileError(error));                
-                dispatch(userLogOut());
-                navigate('/login'); 
+    useEffect(() => {        
+        if (profile.username === "" && profile.email === "") {            
+            dispatch(profileRequested());        
+            ApiService.getUserProfile({ token: profile.token })
+                .then((response) => dispatch(profileLoaded(response.data)))
+                .catch((error) => {
+                    dispatch(profileError(error));                
+                    dispatch(userLogOut());
+                    navigate('/login'); 
             });
-    }, [ ApiService, dispatch, navigate, profile.token ])
+        }
+        
+    }, [ ApiService, dispatch, navigate, profile.token, profile.username, profile.email ])
 
     if (loading) {            
         return <Spinner />

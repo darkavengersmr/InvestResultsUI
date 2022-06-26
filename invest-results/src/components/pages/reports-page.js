@@ -16,22 +16,24 @@ const ReportsPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const profile = useSelector((state) => state.profile);
-    const report = useSelector((state) => state.report);
-    const loading = useSelector((state) => state.loading);
-    const error = useSelector((state) => state.error);
+    const { report,
+            profile,
+            loading,
+            error } = useSelector((state) => state);
 
-    useEffect(() => {
-        dispatch(reportRequested());        
-        ApiService.getJSONReports({ token: profile.token,
-                                    params: { user_id: profile.id } })
-            .then((response) => dispatch(reportLoaded(response.data.investment_report)))
-            .catch((error) => {
-                dispatch(reportError(error));                
-                dispatch(userLogOut());
-                navigate('/login'); 
-            });
-    }, [ ApiService, dispatch, navigate, profile ])
+    useEffect(() => {        
+        if (report.length === 0) {
+            dispatch(reportRequested());        
+            ApiService.getJSONReports({ token: profile.token,
+                                        params: { user_id: profile.id } })
+                .then((response) => dispatch(reportLoaded(response.data.investment_report)))
+                .catch((error) => {
+                    dispatch(reportError(error));                
+                    dispatch(userLogOut());
+                    navigate('/login'); 
+                });
+        }
+    }, [ ApiService, dispatch, navigate, profile, report.length ])
 
     if (loading) {            
         return <Spinner />

@@ -6,7 +6,8 @@ import AppHeader from '../app-header';
 import InvestmentList from '../investment-list';
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
-import { investmentLoaded, investmentRequested, investmentError, 
+import { investmentLoaded, investmentRequested, investmentError,
+         categoriesLoaded, categoriesRequested, categoriesError, 
          userLogOut } from "../../redux-store/actions"
 import { ApiServiceContext } from "../invest-results-service-context";
 
@@ -15,23 +16,53 @@ const InvestmentListPage = () => {
     const ApiService = useContext(ApiServiceContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const investments = useSelector((state) => state.investments);
-    const profile = useSelector((state) => state.profile);
-    const loading = useSelector((state) => state.loading);
-    const error = useSelector((state) => state.error);
 
-    useEffect(() => {      
+    const { investments,
+            categories,
+            only_active_visible,
+            profile,
+            loading,
+            error } = useSelector((state) => state);
+    
+    const addInvestment = ({description, category_id}) => {
         dispatch(investmentRequested());
+        ApiService.createInvestment({ token: profile.token, 
+                                      params: { user_id: profile.id },
+                                      data: { description, 
+                                              category_id,
+                                              is_active: true } 
+                                })
+        .then((response) => { const new_investment = {...response.data, sum:0, proc: 0 }
+                              const updated_investments = [...investments, new_investment]                              
+                              dispatch(investmentLoaded(updated_investments));
 
-        ApiService.getInvestments({ token: profile.token, 
+        })
+    }
+
+   useEffect(() => {
+        if (investments.length === 0) {
+            dispatch(investmentRequested());
+            ApiService.getInvestments({ token: profile.token, 
+                                        params: { user_id: profile.id }})
+                .then((response) => dispatch(investmentLoaded(response.data.investments)))
+                .catch((error) => {
+                    dispatch(investmentError(error));
+                    dispatch(userLogOut());
+                    navigate('/login'); 
+                });
+        }
+        if (categories.length === 0) { 
+            dispatch(categoriesRequested());
+            ApiService.getCategories({ token: profile.token, 
                                     params: { user_id: profile.id }})
-            .then((response) => dispatch(investmentLoaded(response.data.investments)))
-            .catch((error) => {
-                dispatch(investmentError(error));
-                dispatch(userLogOut());
-                navigate('/login'); 
-            });
-    }, [ ApiService, dispatch, profile.token, profile.id, navigate ])            
+                .then((response) => dispatch(categoriesLoaded(response.data.categories)))
+                .catch((error) => { dispatch(categoriesError(error));
+                                    dispatch(userLogOut());
+                                    navigate('/login'); 
+                });
+        }
+    }, [ ApiService, dispatch, profile.token, profile.id, navigate, investments.length,
+        categories.length ])            
 
     if (loading) {            
         return <Spinner />
@@ -43,8 +74,20 @@ const InvestmentListPage = () => {
     
     return (
             <>
-            <AppHeader name="Мои.Инвестиции" />               
-            <InvestmentList investments={investments}/>
+            <AppHeader name="Мои.Инвестиции" />
+            {only_active_visible ? 
+                <InvestmentList categories={categories} 
+                                investments={investments.filter((item) => 
+                                                        item.is_active === true)}
+                                addInvestment={addInvestment} 
+                />                
+                :
+                <InvestmentList categories={categories} 
+                                investments={investments} 
+                                addInvestment={addInvestment} 
+                />                
+            }
+            
             </>
     )
 };

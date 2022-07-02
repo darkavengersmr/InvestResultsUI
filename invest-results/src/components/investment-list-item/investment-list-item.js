@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -9,13 +9,13 @@ import Grid from '@mui/material/Grid';
 
 const InvestmentListItem = ({ investment }) => {
 
-    const { id, description, sum, category, proc } = investment;
+    const { id, description, sum, category, proc, is_active } = investment;
 
     let navigate = useNavigate();
 
-    const navigateToDetail = () => {
+    const navigateToDetail = useCallback(() => {
         navigate(`/investments/${id}`);
-    }    
+    }, [navigate, id]);
 
     return (
         <>
@@ -24,7 +24,7 @@ const InvestmentListItem = ({ investment }) => {
                 <Typography sx={{ fontSize: 14, mb: 0 }} 
                             color="text.secondary"                             
                             gutterBottom>
-                {category}
+                {is_active ? category : "Архив"}
                 </Typography>
                 <Typography variant="h6" component="div">
                 {description}

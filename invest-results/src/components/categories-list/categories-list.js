@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -6,12 +6,14 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+
+import { useDispatch } from 'react-redux'
+import { setContextMenu } from "../../redux-store/actions"
 
 import CategoriesListItem from "../categories-list-item"
 
@@ -20,17 +22,27 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
     const [ open, setOpen ] = useState(false);
     const [ newCategory, setNewCategory ] = useState("");    
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setOpen(false);
-    };
+    }, []);
 
-    const handleAdd = () => {
+    const handleAdd = useCallback(() => {
         onAddCategory(newCategory)
         setOpen(false);
-    };
+    }, [onAddCategory, newCategory]);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => { 
+        dispatch(setContextMenu([
+            {
+                description: "Новая категория",
+                action: () => {
+                    setOpen(true);
+                }
+            }
+        ])); 
+    }, [dispatch])
 
     return (
         <>
@@ -53,15 +65,6 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
             </Table>
         </TableContainer>
         </Container>
-        <Grid container                  
-                sx={{ mt: "2rem" }}
-                direction="column"
-                alignItems="center"                  
-                >
-            <Button onClick={handleClickOpen}>
-                Добавить категорию
-            </Button>
-        </Grid>
 
         <Dialog open={open} 
                 onClose={handleClose}

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import InvestmentListItem from "../investment-list-item"
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -13,6 +12,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useDispatch } from 'react-redux'
+import { setContextMenu } from "../../redux-store/actions"
 
 const InvestmentList = ({ investments, categories, addInvestment }) => {
 
@@ -20,21 +21,31 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
     const [ newInvestment, setNewInvestment ] = useState("");
     const [ selectedCategoryId, selectCategoryId ] = useState("");
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setOpen(false);
-    };
+    }, []);
 
-    const handleAdd = () => {      
+    const handleAdd = useCallback(() => {      
         addInvestment({ description: newInvestment, category_id: selectedCategoryId });  
         setOpen(false);
-    };
+    }, [addInvestment, newInvestment, selectedCategoryId]);
     
-    const handleChangeCategoryId = (event) => {
+    const handleChangeCategoryId = useCallback((event) => {
         selectCategoryId(event.target.value);        
-    };
+    }, []);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => { 
+        dispatch(setContextMenu([
+            {
+                description: "Новая инвестиция",
+                action: () => {
+                    setOpen(true);
+                }
+            }
+        ])); 
+    }, [dispatch])    
 
     return (
         <>
@@ -45,16 +56,6 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
                 })
             }
         </Container>
-
-        <Grid container      
-                sx={{ mt: "2rem", mb: "2rem" }}
-                direction="column"
-                alignItems="center"                  
-                >
-            <Button variant='contained' onClick={handleClickOpen}>
-                Добавить инвестицию
-            </Button>
-        </Grid>
 
         <Dialog open={open} 
                 onClose={handleClose}

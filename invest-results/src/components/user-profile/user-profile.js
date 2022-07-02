@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
@@ -20,12 +20,12 @@ const UserProfile = ({ profile }) => {
     const navigate = useNavigate();
     const [, , removeCookie] = useCookies();
 
-    const logOut = () => {
+    const logOut = useCallback(() => {
         dispatch(userLogOut());
         removeCookie('investresults_token');
         removeCookie('investresults_user_id');
         navigate('/login');         
-    }
+    }, [dispatch, navigate, removeCookie]);
         
     return (                        
         <Container sx={{ mt: "1rem", width: 360 }}>

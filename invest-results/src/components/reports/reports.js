@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from '@mui/material/Container';
 import {
@@ -19,50 +19,54 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+)
 
 const Reports = ({ report, id }) => {
     const [investment, setInvestment] = useState('');
     const navigate = useNavigate();
 
-    const handleChange = (event) => {
+    const handleChange = useCallback((event) => {
         setInvestment(event.target.value);
         navigate(`/reports/${event.target.value}`);
-    };
+    }, [navigate]);
 
-    const plan = [];
-    const fact = [];
-    const index = [];
-    const labels = [];
- 
-    ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        PointElement,
-        LineElement,
-        Title,
-        Tooltip,
-        Legend
-      )    
+    const { plan, fact, index, labels } = useMemo(() => {
+        const plan = [];
+        const fact = [];
+        const index = [];
+        const labels = [];
     
-    const report_data = report.filter((item) => item.id === parseInt(id));
-    if (report_data.length>0) {        
-        for (let date in report_data[0].sum_fact) {
-            labels.push(date);
-            plan.push(report_data[0].sum_plan[date])
-            fact.push(report_data[0].sum_fact[date])
-            index.push(report_data[0].sum_deposit_index[date])
+        const report_data = report.filter((item) => item.id === parseInt(id));
+        if (report_data.length>0) {        
+            for (let date in report_data[0].sum_fact) {
+                labels.push(date);
+                plan.push(report_data[0].sum_plan[date])
+                fact.push(report_data[0].sum_fact[date])
+                index.push(report_data[0].sum_deposit_index[date])
+            }
         }
-    }
+        return { plan, fact, index, labels }
+    // eslint-disable-next-line    
+    }, [report, investment, id]);
 
     useEffect(() => {        
         if (report.length>0) {            
             id ? setInvestment(id) : navigate(`/reports/${report[0].id}`);
         }
+        else {
+            navigate(`/reports/`);
+        }        
     }, [ report, id, navigate ])
 
-       
-    
-    const lineChartData = {
+    const lineChartData = useMemo(() => ({
         labels: labels,
         datasets: [
           {
@@ -87,7 +91,7 @@ const Reports = ({ report, id }) => {
             lineTension: 0.5
           },
         ]
-      };
+      }), [plan, fact, index, labels]);
 
     return (                        
         <Container sx={{ mt: "2rem", width: 360 }}>

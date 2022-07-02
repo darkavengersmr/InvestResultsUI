@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -9,11 +9,12 @@ import ErrorIndicator from '../error-indicator';
 import { investmentLoaded, investmentRequested, investmentError,
          categoriesLoaded, categoriesRequested, categoriesError, 
          userLogOut } from "../../redux-store/actions"
-import { ApiServiceContext } from "../invest-results-service-context";
+import { ApiServiceContext } from "../app-contexts";
 
 const InvestmentListPage = () => {
     
     const ApiService = useContext(ApiServiceContext);
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -24,7 +25,7 @@ const InvestmentListPage = () => {
             loading,
             error } = useSelector((state) => state);
     
-    const addInvestment = ({description, category_id}) => {
+    const addInvestment = useCallback(({description, category_id}) => {
         dispatch(investmentRequested());
         ApiService.createInvestment({ token: profile.token, 
                                       params: { user_id: profile.id },
@@ -37,7 +38,7 @@ const InvestmentListPage = () => {
                               dispatch(investmentLoaded(updated_investments));
 
         })
-    }
+    }, [ApiService, dispatch, investments, profile.id, profile.token]);
 
    useEffect(() => {
         if (investments.length === 0) {
@@ -45,10 +46,13 @@ const InvestmentListPage = () => {
             ApiService.getInvestments({ token: profile.token, 
                                         params: { user_id: profile.id }})
                 .then((response) => dispatch(investmentLoaded(response.data.investments)))
-                .catch((error) => {
-                    dispatch(investmentError(error));
-                    dispatch(userLogOut());
-                    navigate('/login'); 
+                .catch((error) => {                    
+                    if (error.response.status === 401) {
+                        dispatch(userLogOut());
+                        navigate('/login');
+                    } else {
+                        dispatch(investmentError(error));
+                    }
                 });
         }
         if (categories.length === 0) { 
@@ -56,13 +60,17 @@ const InvestmentListPage = () => {
             ApiService.getCategories({ token: profile.token, 
                                     params: { user_id: profile.id }})
                 .then((response) => dispatch(categoriesLoaded(response.data.categories)))
-                .catch((error) => { dispatch(categoriesError(error));
-                                    dispatch(userLogOut());
-                                    navigate('/login'); 
+                .catch((error) => { 
+                    if (error.response.status === 401) {
+                        dispatch(userLogOut());
+                        navigate('/login');
+                    } else {
+                        dispatch(categoriesError(error));
+                    }
                 });
         }
-    }, [ ApiService, dispatch, profile.token, profile.id, navigate, investments.length,
-        categories.length ])            
+    // eslint-disable-next-line
+    }, [ ])            
 
     if (loading) {            
         return <Spinner />

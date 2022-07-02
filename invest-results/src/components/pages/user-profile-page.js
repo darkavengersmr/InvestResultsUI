@@ -5,12 +5,14 @@ import AppHeader from "../app-header"
 import UserProfile from '../user-profile';
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
-import { profileLoaded, profileRequested, profileError, userLogOut } from "../../redux-store/actions"
-import { ApiServiceContext } from "../invest-results-service-context";
+import { profileLoaded, profileRequested, profileError, 
+         userLogOut, setContextMenu } from "../../redux-store/actions"
+import { ApiServiceContext } from "../app-contexts";
 
 const UserProfilePage = () => {
     
     const ApiService = useContext(ApiServiceContext);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -24,13 +26,29 @@ const UserProfilePage = () => {
             ApiService.getUserProfile({ token: profile.token })
                 .then((response) => dispatch(profileLoaded(response.data)))
                 .catch((error) => {
-                    dispatch(profileError(error));                
-                    dispatch(userLogOut());
-                    navigate('/login'); 
+                    if (error.response.status === 401) {
+                        dispatch(userLogOut());
+                        navigate('/login');
+                    } else {
+                        dispatch(profileError(error));  
+                    } 
             });
         }
-        
-    }, [ ApiService, dispatch, navigate, profile.token, profile.username, profile.email ])
+    // eslint-disable-next-line    
+    }, [])
+
+    useEffect(() => { 
+        dispatch(setContextMenu([
+            {
+                description: "Выйти",
+                action: () => {
+                    dispatch(userLogOut());
+                    navigate('/login');
+                }
+            }
+        ]));
+    // eslint-disable-next-line 
+    }, [])
 
     if (loading) {            
         return <Spinner />
@@ -42,7 +60,7 @@ const UserProfilePage = () => {
     
     return (
         <div>
-            <AppHeader name="Профиль"/>
+            <AppHeader name="Профиль" />
             <UserProfile profile={profile}/>
         </div>
     )

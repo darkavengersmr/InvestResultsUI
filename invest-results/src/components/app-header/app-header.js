@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AppBar from '@mui/material/AppBar';
@@ -7,7 +7,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AccountCircle } from '@mui/icons-material';
 
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
@@ -22,41 +21,42 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import CategoryIcon from '@mui/icons-material/Category';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
-function AppHeader({ name }) {
+import ContextMenu from '../context-menu';
 
-  const [state, setState] = React.useState({
+function AppHeader({ name, contextMenuItems }) {
+
+  const [state, setState] = useState({
     left: false,    
   });
 
   let navigate = useNavigate();
 
-  const navigateToInvestment = () => {
+  const navigateToInvestment = useCallback(() => {
       navigate(`/investments`);
-  }
+  }, [navigate]);
 
-  const navigateToCategories = () => {
+  const navigateToCategories = useCallback(() => {
     navigate(`/categories`);
-  }
+  }, [navigate]);
 
-  const navigateToProfile = () => {
+  const navigateToProfile = useCallback(() => {
     navigate(`/profile`);
-  }
+  }, [navigate]);
 
-  const navigateToReports = () => {
+  const navigateToReports = useCallback(() => {
     navigate(`/reports`);
-  }
+  }, [navigate]);
 
-  const navigateToSettings = () => {
+  const navigateToSettings = useCallback(() => {
     navigate(`/settings`);
-  }
+  }, [navigate]);
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = useCallback((anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setState({ ...state, [anchor]: open });
-  };
+  }, [state]);
 
   return (
     <>
@@ -76,16 +76,9 @@ function AppHeader({ name }) {
           <Typography component="div" sx={{ flexGrow: 1 }}>
             { name }
           </Typography>
-          <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"                
-                color="inherit"
-                onClick={navigateToProfile}
-              >
-                <AccountCircle />
-              </IconButton>
+
+          <ContextMenu contextMenuItems={contextMenuItems} />
+
         </Toolbar>
       </AppBar>
     </Box>

@@ -168,6 +168,13 @@ const setTheme = (newTheme) => {
     }
 }
 
+const setContextMenu = (newMenu) => {    
+    return {
+        type: 'SET_CONTEXT_MENU',
+        payload: newMenu
+    }
+}
+
 const setOnlyActiveVisible = (newSetting) => {    
     return {
         type: 'SET_ONLY_ACTIVE_VISIBLE',
@@ -209,5 +216,6 @@ export {
 
     userLogOut,
     setTheme,
+    setContextMenu,
     setOnlyActiveVisible
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -8,7 +8,7 @@ import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
 import { categoriesLoaded, categoriesRequested, categoriesError, 
          userLogOut} from "../../redux-store/actions"
-import { ApiServiceContext } from "../invest-results-service-context";
+import { ApiServiceContext } from "../app-contexts";
 
 const CategoriesListPage = () => {
     
@@ -27,26 +27,30 @@ const CategoriesListPage = () => {
             ApiService.getCategories({ token: profile.token, 
                                     params: { user_id: profile.id }})
                 .then((response) => dispatch(categoriesLoaded(response.data.categories)))
-                .catch((error) => { dispatch(categoriesError(error));
-                                    dispatch(userLogOut());
-                                    navigate('/login'); 
+                .catch((error) => { 
+                    if (error.response.status === 401) {
+                        dispatch(userLogOut());
+                        navigate('/login');
+                    } else {
+                        dispatch(categoriesError(error));
+                    }                     
                 });
         }
-    }, [ ApiService, dispatch, navigate, profile.token, profile.id, categories.length ]);
+    // eslint-disable-next-line
+    }, []);
 
-    const addCategory = (newCategory) => {
+    const addCategory = useCallback((newCategory) => {
         dispatch(categoriesRequested());
         ApiService.createCategory({ token: profile.token, 
                                    params: { user_id: profile.id },
                                    data: { category: newCategory } 
                                 })
-        .then((response) => { const updated_categories = [...categories, response.data]
-            console.log(updated_categories);
+        .then((response) => { const updated_categories = [...categories, response.data]            
             dispatch(categoriesLoaded(updated_categories));
         });
-    }
+    }, [ApiService, categories, dispatch, profile.id, profile.token]);
 
-    const delCategory = (idCategory) => {
+    const delCategory = useCallback((idCategory) => {
         dispatch(categoriesRequested());
         ApiService.deleteCategory({ token: profile.token, 
                     params: { user_id: profile.id, category_id: idCategory }
@@ -54,7 +58,7 @@ const CategoriesListPage = () => {
         .then(() => ApiService.getCategories({ token: profile.token, 
                                                params: { user_id: profile.id }})
         .then((response) => dispatch(categoriesLoaded(response.data.categories))))
-    }
+    }, [ApiService, dispatch, profile.id, profile.token]);
 
     if (loading) {            
         return <Spinner />
@@ -66,7 +70,7 @@ const CategoriesListPage = () => {
     
     return (
         <div>
-            <AppHeader name="Категории инвестиций"/>
+            <AppHeader name="Категории инвестиций" />
             <CategoriesList categories={categories}
                             onAddCategory={addCategory}
                             onDelCategory={delCategory}

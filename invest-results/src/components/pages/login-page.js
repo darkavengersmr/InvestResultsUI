@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { useCookies } from 'react-cookie';
@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import AppHeader from '../app-header';
 import { tokenLoaded, tokenRequested, tokenError,
          profileLoaded, profileRequested } from "../../redux-store/actions"
-import { ApiServiceContext } from "../invest-results-service-context";
+import { ApiServiceContext } from "../app-contexts";
 
 const LoginPage = () => {
 
@@ -30,13 +30,13 @@ const LoginPage = () => {
     if (profile.token && profile.id) {
       navigate('/investments/');      
     }
-  }, [ navigate, profile.token, profile.id, ])
+  }, [ navigate, profile.token, profile.id ])
 
-  const handleClickRegister = () => {    
+  const handleClickRegister = useCallback(() => {    
     navigate('/register');
-  };
+  }, [navigate]);
 
-  const handleClickLogin = () => {    
+  const handleClickLogin = useCallback(() => {    
     dispatch(tokenRequested());
     dispatch(profileRequested());
     
@@ -51,17 +51,23 @@ const LoginPage = () => {
         setCookie('investresults_user_id', response.data.id);
         navigate('/investments/');
       })      
-      .catch((error) =>  dispatch(tokenError(error))); 
+      .catch((error) => {
+        if (error.response.status === 401) {            
+            navigate('/login');
+        } else {
+          dispatch(tokenError(error));
+        }      
+      })
     
-  };
+  }, [ApiService, dispatch, navigate, password, setCookie, username]);
 
-  const onLoginChange = (e) => {
+  const onLoginChange = useCallback((e) => {
     setUsername(e.target.value);    
-  }
+  }, []);
 
-  const onPasswordChange = (e) => {
+  const onPasswordChange = useCallback((e) => {
     setPassword(e.target.value);    
-  }
+  }, []);
 
   return (
       <>

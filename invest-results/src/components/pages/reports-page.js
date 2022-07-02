@@ -6,7 +6,9 @@ import Reports from '../reports';
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
 import { reportLoaded, reportRequested, reportError, userLogOut } from "../../redux-store/actions"
-import { ApiServiceContext } from "../invest-results-service-context";
+import { ApiServiceContext } from "../app-contexts";
+
+import { setContextMenu } from "../../redux-store/actions"
 
 const ReportsPage = () => {
     
@@ -28,12 +30,20 @@ const ReportsPage = () => {
                                         params: { user_id: profile.id } })
                 .then((response) => dispatch(reportLoaded(response.data.investment_report)))
                 .catch((error) => {
-                    dispatch(reportError(error));                
-                    dispatch(userLogOut());
-                    navigate('/login'); 
+                    if (error.response.status === 401) {
+                        dispatch(userLogOut());
+                        navigate('/login');
+                    } else {
+                        dispatch(reportError(error));
+                    }                    
                 });
         }
     }, [ ApiService, dispatch, navigate, profile, report.length ])
+
+    useEffect(() => { 
+        dispatch(setContextMenu([]));
+    // eslint-disable-next-line 
+    }, [])
 
     if (loading) {            
         return <Spinner />
@@ -45,7 +55,7 @@ const ReportsPage = () => {
     
     return (
         <div>
-            <AppHeader name="Отчеты"/>            
+            <AppHeader name="Отчеты"  />            
             <Reports report={report} id={id} />
         </div>
     )

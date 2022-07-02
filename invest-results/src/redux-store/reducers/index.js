@@ -17,6 +17,7 @@ if (theme === undefined ) {
 } 
 
 const initialState = {
+    contextMenu: [],
     profile: {token: token, username: "", email: "", id: user_id},
     theme: theme,
     investments: [],
@@ -46,7 +47,7 @@ const reducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
-        case 'FETCH_INVESTMENTS_SUCCESS':
+        case 'FETCH_INVESTMENTS_SUCCESS':            
             return {
                 ...state,
                 investments: action.payload,
@@ -190,6 +191,12 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 theme: action.payload                
+            };
+
+        case 'SET_CONTEXT_MENU':
+            return {
+                ...state,
+                contextMenu: action.payload                
             };
 
         case 'SET_ONLY_ACTIVE_VISIBLE':

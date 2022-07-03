@@ -8,8 +8,8 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
 import AppHeader from '../app-header';
-import { tokenLoaded, tokenRequested, tokenError,
-         profileLoaded, profileRequested } from "../../redux-store/actions"
+import { tokenLoaded, tokenRequested, 
+         profileLoaded, profileRequested, setNotification } from "../../redux-store/actions"
 import { ApiServiceContext } from "../app-contexts";
 
 const LoginPage = () => {
@@ -53,10 +53,11 @@ const LoginPage = () => {
       })      
       .catch((error) => {
         if (error.response.status === 401) {            
-            navigate('/login');
-        } else {
-          dispatch(tokenError(error));
-        }      
+          dispatch(setNotification({
+            text: "Ошибка в имени пользователя или пароле",
+            type: "error"
+          }))
+        }       
       })
     
   }, [ApiService, dispatch, navigate, password, setCookie, username]);

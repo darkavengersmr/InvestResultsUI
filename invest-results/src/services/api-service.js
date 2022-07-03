@@ -148,10 +148,11 @@ export default class ApiService {
       })
     };
 
-    getXLSXReports({ token, params }) {        
+    getXLSXReports({ token, params }) {
       return axios({
         method: 'get',
-          url: "/users/reports/xlsx/",
+        url: "/users/reports/xlsx/",
+        responseType: "blob",
         headers: {
             "accept": "application/json",
             "Authorization": "Bearer " + token
@@ -159,5 +160,5 @@ export default class ApiService {
         params: params 
       })
     };
-
+    
 }

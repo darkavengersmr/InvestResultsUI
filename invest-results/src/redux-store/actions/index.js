@@ -175,6 +175,13 @@ const setContextMenu = (newMenu) => {
     }
 }
 
+const setNotification = (newNotify) => {    
+    return {
+        type: 'SET_NOTIFICATION',
+        payload: newNotify
+    }
+}
+
 const setOnlyActiveVisible = (newSetting) => {    
     return {
         type: 'SET_ONLY_ACTIVE_VISIBLE',
@@ -217,5 +224,6 @@ export {
     userLogOut,
     setTheme,
     setContextMenu,
+    setNotification,
     setOnlyActiveVisible
 }

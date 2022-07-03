@@ -6,6 +6,7 @@ import CategoriesListPage from "./categories-list-page";
 import UserProfilePage from "./user-profile-page";
 import ReportsPage from "./reports-page";
 import SettingsPage from "./settings-page";
+import KeyRatesPage from "./key-rates-page";
 
 export {
     LoginPage,
@@ -15,5 +16,6 @@ export {
     CategoriesListPage,
     UserProfilePage,
     ReportsPage,
-    SettingsPage
+    SettingsPage,
+    KeyRatesPage
 }

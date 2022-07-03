@@ -45,7 +45,12 @@ const InvestmentListPage = () => {
             dispatch(investmentRequested());
             ApiService.getInvestments({ token: profile.token, 
                                         params: { user_id: profile.id }})
-                .then((response) => dispatch(investmentLoaded(response.data.investments)))
+                .then((response) => {
+                    dispatch(investmentLoaded(response.data.investments));
+                    if (response.data.investments.length === 0) {
+                        navigate('/help');    
+                    }
+                })
                 .catch((error) => {                    
                     if (error.response.status === 401) {
                         dispatch(userLogOut());

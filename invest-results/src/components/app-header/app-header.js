@@ -22,6 +22,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 import ContextMenu from '../context-menu';
+import Notification from '../notifications';
 
 function AppHeader({ name, contextMenuItems }) {
 
@@ -49,6 +50,14 @@ function AppHeader({ name, contextMenuItems }) {
 
   const navigateToSettings = useCallback(() => {
     navigate(`/settings`);
+  }, [navigate]);
+
+  const navigateToHelp = useCallback(() => {
+    navigate(`/help`);
+  }, [navigate]);
+
+  const navigateToKeyRates = useCallback(() => {
+    navigate(`/keyrates`);
   }, [navigate]);
 
   const toggleDrawer = useCallback((anchor, open) => (event) => {
@@ -82,6 +91,8 @@ function AppHeader({ name, contextMenuItems }) {
         </Toolbar>
       </AppBar>
     </Box>
+
+    <Notification />
 
     <SwipeableDrawer
       anchor="left"
@@ -119,7 +130,7 @@ function AppHeader({ name, contextMenuItems }) {
               <ListItemText primary="Отчеты" />
             </ListItemButton>
           </ListItem>
-          <ListItem>
+          <ListItem onClick={navigateToKeyRates}>
             <ListItemButton>
               <ListItemIcon>
                 <BarChartIcon />
@@ -144,6 +155,14 @@ function AppHeader({ name, contextMenuItems }) {
                 <AccountBoxIcon />
               </ListItemIcon>
               <ListItemText primary="Профиль" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem onClick={navigateToHelp}>
+            <ListItemButton>
+              <ListItemIcon>
+                <AccountBoxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Справка" />
             </ListItemButton>
           </ListItem>
       </List>

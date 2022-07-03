@@ -75,7 +75,7 @@ function ContextMenu() {
       >
         {
             contextMenu.map((item) => (
-                <MenuItem onClick={item.action} key={item.description}>
+                <MenuItem onClick={item.action} key={item.description}>                    
                     {item.description}
                 </MenuItem>
             ))

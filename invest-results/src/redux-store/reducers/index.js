@@ -27,7 +27,11 @@ const initialState = {
     report: [],
     only_active_visible: only_active_visible,
     loading: false,
-    error: null,    
+    error: null,
+    notification: {
+        text: "",
+        type: ""
+    }    
 }
 
 const reducer = (state = initialState, action) => {
@@ -197,6 +201,12 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 contextMenu: action.payload                
+            };
+
+        case 'SET_NOTIFICATION':
+            return {
+                ...state,
+                notification: action.payload                
             };
 
         case 'SET_ONLY_ACTIVE_VISIBLE':

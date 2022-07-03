@@ -30,20 +30,31 @@ ChartJS.register(
 )
 
 const Reports = ({ report, id }) => {
+
     const [investment, setInvestment] = useState('');
+    const [chartType, setChartType] = useState('1');
+
     const navigate = useNavigate();
 
-    const handleChange = useCallback((event) => {
+    const handleChangeInvestment = useCallback((event) => {
         setInvestment(event.target.value);
         navigate(`/reports/${event.target.value}`);
     }, [navigate]);
 
-    const { plan, fact, index, labels } = useMemo(() => {
+    const handleChangeChartType = useCallback((event) => {
+        setChartType(event.target.value);        
+    }, []);
+
+    const { plan, fact, index, labels, fact_proc, index_compare_proc } = useMemo(() => {
+        const labels = [];
+
         const plan = [];
         const fact = [];
         const index = [];
-        const labels = [];
-    
+        
+        const fact_proc = [];
+        const index_compare_proc = [];
+        
         const report_data = report.filter((item) => item.id === parseInt(id));
         if (report_data.length>0) {        
             for (let date in report_data[0].sum_fact) {
@@ -51,9 +62,11 @@ const Reports = ({ report, id }) => {
                 plan.push(report_data[0].sum_plan[date])
                 fact.push(report_data[0].sum_fact[date])
                 index.push(report_data[0].sum_deposit_index[date])
+                fact_proc.push(report_data[0].sum_delta_proc[date])
+                index_compare_proc.push(report_data[0].ratio_deposit_index[date])
             }
         }
-        return { plan, fact, index, labels }
+        return { plan, fact, index, labels, fact_proc, index_compare_proc }
     // eslint-disable-next-line    
     }, [report, investment, id]);
 
@@ -66,8 +79,8 @@ const Reports = ({ report, id }) => {
         }        
     }, [ report, id, navigate ])
 
-    const lineChartData = useMemo(() => ({
-        labels: labels,
+    const lineChartData1 = useMemo(() => ({
+        labels: labels,        
         datasets: [
           {
             data: plan,
@@ -93,17 +106,45 @@ const Reports = ({ report, id }) => {
         ]
       }), [plan, fact, index, labels]);
 
+      const lineChartData2 = useMemo(() => ({        
+        labels: labels,
+        datasets: [
+          {
+            data: index_compare_proc,
+            label: "% от индекса",
+            borderColor: "#0000ff",
+            fill: true,
+            lineTension: 0.5
+          },
+          {
+            data: fact_proc,
+            label: "% от вложений",
+            borderColor: "#00ff00",
+            fill: true,
+            lineTension: 0.5
+          }
+        ]
+      }), [index_compare_proc, fact_proc, labels]);
+
+    const chartOptions = useMemo(() => ({
+    plugins: {
+        legend: {
+            position: 'bottom',
+        },
+    }
+    }), []);
+
     return (                        
-        <Container sx={{ mt: "2rem", width: 360 }}>
-            <Box sx={{ minWidth: 120, mb: "2rem" }}>
+        <Container sx={{ mt: "2rem", mb: "2rem", width: 360 }}>
+            <Box sx={{ minWidth: 120, mb: "1rem" }}>
             <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Выберите инвестицию</InputLabel>
+                <InputLabel id="demo-simple-select-label">Инвестиция</InputLabel>
                 <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={investment}
                 label="Age"
-                onChange={handleChange}
+                onChange={handleChangeInvestment}
                 >
                 {
                 report.map((item) => {
@@ -113,21 +154,28 @@ const Reports = ({ report, id }) => {
                 </Select>
             </FormControl>
             </Box>
+
+            <Box sx={{ minWidth: 120, mb: "2rem" }}>
+            <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Тип графика</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={chartType}
+                label="Age"
+                onChange={handleChangeChartType}
+                >
+                    <MenuItem value="1">Сумма</MenuItem>
+                    <MenuItem value="2">Процент отклонения</MenuItem>
+                </Select>
+            </FormControl>
+            </Box>
+
             <Line
                 type="line"            
                 height={320}
-                options={{
-                    title: {
-                    display: true,
-                    text: "Test Data",
-                    fontSize: 20
-                    },
-                    legend: {
-                    display: true, //Is the legend shown?
-                    position: "right" //Position of the legend.
-                    }
-                }}
-                data={lineChartData}
+                options={chartOptions}
+                data={chartType === "1" ? lineChartData1 : lineChartData2}                
             />
 
         </Container>         

@@ -38,10 +38,37 @@ const ReportsPage = () => {
                     }                    
                 });
         }
-    }, [ ApiService, dispatch, navigate, profile, report.length ])
+    // eslint-disable-next-line 
+    }, [])
 
     useEffect(() => { 
-        dispatch(setContextMenu([]));
+        dispatch(setContextMenu([
+            {
+                description: "Отчет в Excel",
+                action: () => {                    
+                    ApiService.getXLSXReports({ token: profile.token,
+                                                params: { user_id: profile.id } })
+                    .then((response) => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement("a");
+                        link.href = url;
+                        let date = new Date();
+                        let filename = 'investresults' + date.toISOString().split('T')[0] + ".xlsx";
+                        link.setAttribute("download", filename);
+                        document.body.appendChild(link);
+                        link.click();
+                    })
+                    .catch((error) => {
+                        if (error.response.status === 401) {
+                            dispatch(userLogOut());
+                            navigate('/login');
+                        } else {
+                            dispatch(reportError(error));
+                        }                    
+                    });
+                }
+            }            
+        ]));
     // eslint-disable-next-line 
     }, [])
 

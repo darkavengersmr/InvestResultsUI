@@ -12,7 +12,10 @@ import { LoginPage,
          CategoriesListPage,
          UserProfilePage,
          ReportsPage,
-         SettingsPage } from '../pages';
+         SettingsPage,
+         KeyRatesPage } from '../pages';
+
+import HelpWelcomeInfo from '../help-welcomeinfo';
 
 const darkTheme = createTheme({
   palette: {
@@ -67,7 +70,13 @@ const App = () => {
             element={<SettingsPage />} />  
           <Route 
             path="/profile/"
-            element={<UserProfilePage />} />      
+            element={<UserProfilePage />} />
+          <Route 
+          path="/keyrates"
+          element={<KeyRatesPage />} />            
+          <Route 
+          path="/help"
+          element={<HelpWelcomeInfo />} />      
         </Routes>
         </div>
       </CookiesProvider>    

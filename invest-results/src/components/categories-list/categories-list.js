@@ -44,6 +44,10 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
         ])); 
     }, [dispatch])
 
+    const onEnter = (e) => {
+        if (e.key === "Enter") {handleAdd()}
+    }
+
     return (
         <>
         <Container sx={{ mt: "1rem", width: 360 }}>
@@ -72,7 +76,7 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
             <DialogTitle>Добавить категорию</DialogTitle>
             <DialogContent>
             <DialogContentText>
-                Введите категорию инвестиций, например "Брокерский счет", "Недвижимость" или "Криптовалюты"
+                Введите категорию инвестиций, например "Ценные бумаги", "Недвижимость" или "Криптовалюты"
             </DialogContentText>
             <TextField
                 autoFocus
@@ -83,11 +87,12 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
                 fullWidth
                 variant="standard"
                 onChange={(e) => setNewCategory(e.target.value) }
+                onKeyPress={onEnter}
             />
             </DialogContent>
             <DialogActions>
             <Button onClick={handleClose}>Отмена</Button>
-            <Button onClick={handleAdd}>Добавить</Button>
+            <Button onClick={handleAdd} onKeyPress={onEnter}>Добавить</Button>
             </DialogActions>
         </Dialog>
         </>

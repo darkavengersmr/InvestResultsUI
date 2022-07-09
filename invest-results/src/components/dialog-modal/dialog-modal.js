@@ -17,9 +17,16 @@ const DialogModal = ({ triggerToOpen,
                        commentNeed                       
                     }) => {
 
+    const dateNow = useMemo(() => {
+        const date = new Date();
+        return date.getFullYear() + '-' + 
+            String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(date.getDate()).padStart(2, '0');
+    }, [])
+
     const [ sum, setSum ] = useState("");
     const [ comment, setComment ] = useState("");
-    const [ date, setDate ] = useState("");
+    const [ date, setDate ] = useState(dateNow + "T12:00:00.000Z");
 
     const onSumChange = useCallback((e) => {
         setSum(e.target.value);    
@@ -33,12 +40,11 @@ const DialogModal = ({ triggerToOpen,
         setDate(e.target.value + "T12:00:00.000Z");           
         }, []);
 
-    const dateNow = useMemo(() => {
-        const date = new Date();
-        return date.getFullYear() + '-' + 
-               String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-               String(date.getDate()).padStart(2, '0');
-    }, [])
+    
+
+    const onEnter = (e) => {
+        if (e.key === "Enter") { funcToCloseOk({ sum, comment, date }) }
+    }
 
     return (
     <Dialog open={triggerToOpen} 
@@ -58,6 +64,7 @@ const DialogModal = ({ triggerToOpen,
             fullWidth
             variant="standard"
             onChange={onSumChange}
+            onKeyPress={onEnter}
         />
         { commentNeed && 
         <TextField
@@ -69,6 +76,8 @@ const DialogModal = ({ triggerToOpen,
             fullWidth
             variant="standard"
             onChange={onCommentChange}
+            onKeyPress={onEnter}
+            
         />
         }
         <TextField
@@ -77,6 +86,7 @@ const DialogModal = ({ triggerToOpen,
         type="date"
         defaultValue={dateNow}
         onChange={onDateChange}
+        onKeyPress={onEnter}
         sx={{ mt: "1rem" }}
         InputLabelProps={{
           shrink: true,
@@ -85,7 +95,8 @@ const DialogModal = ({ triggerToOpen,
         </DialogContent>
         <DialogActions>
         <Button onClick={funcToCloseCancel}>Отмена</Button>
-        <Button onClick={() => funcToCloseOk({ sum, comment, date })}>{dialogTitle}</Button>
+        <Button onKeyPress={onEnter} 
+                onClick={() => funcToCloseOk({ sum, comment, date })}>{dialogTitle}</Button>
         </DialogActions>
     </Dialog>
     )

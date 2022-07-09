@@ -9,7 +9,7 @@ import ErrorIndicator from '../error-indicator';
 import { investmentLoaded, investmentRequested, investmentError,
          historyRequested, historyLoaded, historyError, historyAdd, 
          inOutRequested, inOutLoaded, inOutError, inOutAdd,
-         reportLoaded, userLogOut } from "../../redux-store/actions"
+         reportLoaded, userLogOut, setNotification } from "../../redux-store/actions"
 import { ApiServiceContext } from "../app-contexts";
 
 const InvestmentDetailPage = () => {
@@ -27,16 +27,21 @@ const InvestmentDetailPage = () => {
             loading, 
             error } = useSelector((state) => state);
     
-    const description = useMemo(() => {
+    const { description, is_active } = useMemo(() => {
+        //console.log(investments)
         try {
             const investment_item = investments.filter((investment_item) => 
                                                         investment_item.id === parseInt(id));
-            
-            return investment_item[0].description;       
+            //console.log(investment_item[0].is_active)
+            return { description: investment_item[0].description, 
+                     is_active: investment_item[0].is_active }
             
         } catch {
-            return "Мои.Инвестиции"
+            //console.log(undefined)
+            return { description: "Мои.Инвестиции", 
+                     is_active: undefined }
         }
+        
     }, [investments, id])
 
     useEffect(() => {
@@ -123,6 +128,27 @@ const InvestmentDetailPage = () => {
         .catch((error) => dispatch(inOutError(error)));
     }, [ApiService, dispatch, id, profile.id, profile.token]);
 
+    const deactivateInvestment = useCallback((is_active) => {
+        ApiService.deactivateInvestment({ token: profile.token, 
+            params: { user_id: profile.id, investment_id: id},            
+         })
+        .then(() => { dispatch(setNotification({
+                text: is_active ? 'Инвестиция деактивирована' : 'Инвестиция активирована',
+                type: "success"
+            }));            
+            const updated_investments = investments.map((item) => 
+                            item.id === parseInt(id) ? {...item, is_active: !is_active} : item)
+                       
+            dispatch(investmentLoaded([...updated_investments]));
+            
+        })
+        .catch(() => { dispatch(setNotification({
+            text: 'Операция не выполнена',
+            type: "error"
+        }))
+    });
+    }, [ApiService, dispatch, id, profile.id, profile.token, investments]);
+
     if (loading) {            
         return <Spinner />
     }
@@ -134,7 +160,12 @@ const InvestmentDetailPage = () => {
     return (
         <>               
             <AppHeader name={description} />    
-            <InvestmentDetail id={id} addHistory={addHistory} addInOut={addInOut} />
+            <InvestmentDetail id={id} 
+                              addHistory={addHistory} 
+                              addInOut={addInOut}
+                              deactivateInvestment={deactivateInvestment} 
+                              is_active={is_active}
+            />
         </>
     )
 };

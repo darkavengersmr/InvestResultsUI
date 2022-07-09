@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 import AppHeader from "../app-header"
 import UserProfile from '../user-profile';
 import Spinner from "../spinner"
@@ -15,6 +16,8 @@ const UserProfilePage = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [, , removeCookie] = useCookies();
 
     const { profile,
             loading,
@@ -43,6 +46,8 @@ const UserProfilePage = () => {
                 description: "Выйти",
                 action: () => {
                     dispatch(userLogOut());
+                    removeCookie('investresults_token');
+                    removeCookie('investresults_user_id');
                     navigate('/login');
                 }
             }

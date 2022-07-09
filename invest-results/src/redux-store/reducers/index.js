@@ -51,7 +51,7 @@ const reducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
-        case 'FETCH_INVESTMENTS_SUCCESS':            
+        case 'FETCH_INVESTMENTS_SUCCESS':
             return {
                 ...state,
                 investments: action.payload,

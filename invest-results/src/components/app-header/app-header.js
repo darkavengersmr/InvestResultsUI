@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -25,6 +26,8 @@ import ContextMenu from '../context-menu';
 import Notification from '../notifications';
 
 function AppHeader({ name, contextMenuItems }) {
+
+  const { profile } = useSelector((state) => state);
 
   const [state, setState] = useState({
     left: false,    
@@ -83,7 +86,7 @@ function AppHeader({ name, contextMenuItems }) {
             <MenuIcon />
           </IconButton>
           <Typography component="div" sx={{ flexGrow: 1 }}>
-            { name }
+          { profile.username === 'demo' ? '[Демо] ' : '' } {name} 
           </Typography>
 
           <ContextMenu contextMenuItems={contextMenuItems} />

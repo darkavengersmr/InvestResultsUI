@@ -56,8 +56,18 @@ const Reports = ({ report, id }) => {
         const index_compare_proc = [];
         
         const report_data = report.filter((item) => item.id === parseInt(id));
-        if (report_data.length>0) {        
-            for (let date in report_data[0].sum_fact) {
+
+        if (report_data.length>0) {
+            
+            const ordered_by_date = Object.keys(report_data[0].sum_fact).sort().reduce(
+                (obj, key) => { 
+                  obj[key] = report_data[0].sum_fact[key]; 
+                  return obj;
+                }, 
+                {}
+              );
+
+            for (let date in ordered_by_date) {                
                 labels.push(date);
                 plan.push(report_data[0].sum_plan[date])
                 fact.push(report_data[0].sum_fact[date])

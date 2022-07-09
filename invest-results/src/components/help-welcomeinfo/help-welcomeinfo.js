@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux'
 
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 import AppHeader from '../app-header';
+import { setContextMenu } from "../../redux-store/actions"
 
-const HelpWelcomeInfo = () => {    
+const HelpWelcomeInfo = () => { 
+
+    const dispatch = useDispatch();
+
+    useEffect(() => { 
+        dispatch(setContextMenu([]));
+    // eslint-disable-next-line
+    }, [])
+
     return (
         <>
             <AppHeader name="Справка" /> 

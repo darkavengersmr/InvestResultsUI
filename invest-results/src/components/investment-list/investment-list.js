@@ -47,6 +47,10 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
         ])); 
     }, [dispatch])    
 
+    const onEnter = (e) => {
+        if (e.key === "Enter") {handleAdd()}
+    }
+
     return (
         <>
         <Container sx={{ width: 360 }}>
@@ -74,6 +78,7 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
                 fullWidth
                 variant="standard"
                 onChange={(e) => setNewInvestment(e.target.value) }
+                onKeyPress={onEnter}
             />
             <FormControl fullWidth sx={{ mt: "1rem" }}>
                 <InputLabel id="demo-simple-select-label">Категория</InputLabel>
@@ -93,7 +98,7 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
             </DialogContent>
             <DialogActions>
             <Button onClick={handleClose}>Отмена</Button>
-            <Button onClick={handleAdd}>Добавить</Button>
+            <Button onClick={handleAdd} onKeyPress={onEnter}>Добавить</Button>
             </DialogActions>
         </Dialog>
         </>

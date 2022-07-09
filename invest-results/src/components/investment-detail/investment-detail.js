@@ -16,7 +16,7 @@ import DialogModal from '../dialog-modal';
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
 
-const InvestmentDetail = ({ id, addHistory, addInOut }) => {
+const InvestmentDetail = ({ id, addHistory, addInOut, deactivateInvestment, is_active }) => {
 
     const [ openHistory, setOpenHistory ] = useState(false);
     const [ openDeposit, setOpenDeposit ] = useState(false);
@@ -107,7 +107,7 @@ const InvestmentDetail = ({ id, addHistory, addInOut }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => { 
+    useEffect(() => {        
         dispatch(setContextMenu([
             {
                 description: "Зафиксировать сумму",
@@ -132,20 +132,57 @@ const InvestmentDetail = ({ id, addHistory, addInOut }) => {
                 action: () => {
                     navigate(`/reports/${id}`);
                 }
+            },
+            {
+                description:  is_active ? 'В архив' : 'Вернуть из архива',
+                action: () => {
+                    deactivateInvestment(is_active);
+                }
             }
         ])); 
-    }, [dispatch, id, navigate])
+    }, [dispatch, id, navigate, is_active, deactivateInvestment])
 
     const tableHeadStyle = useMemo(() => ({ p: "4px", fontSize: "1rem" }), []);
     const tableCellStyle = useMemo(() => ({ p: "8px 1px 8px 1px", fontSize: "0.8rem" }), []);
 
+    const ModalDialogs = () => { 
+        return (
+        <>
+        <DialogModal triggerToOpen={openHistory} 
+                     funcToCloseOk={handleAddHistory}
+                     funcToCloseCancel={handleCloseHistory}
+                     dialogTitle="Зафиксировать"
+                     dialogContentText="Введите сумму для фиксации на текущую дату"
+        />
+
+        <DialogModal triggerToOpen={openDeposit} 
+                     funcToCloseOk={handleAddDeposit}
+                     funcToCloseCancel={handleCloseDeposit}
+                     dialogTitle="Внести"
+                     dialogContentText="Введите вносимую сумму и комментарий"
+                     commentNeed
+        />
+
+        <DialogModal triggerToOpen={openCredit} 
+                     funcToCloseOk={handleAddCredit}
+                     funcToCloseCancel={handleCloseCredit}
+                     dialogTitle="Снять"
+                     dialogContentText="Введите снимаемую сумму и комментарий"
+                     commentNeed
+        />
+        </>
+    )}
+
     if (Object.keys(investment_detail_item).length === 0) {
         return (            
+            <>
             <Container sx={{ mt: "1rem", width: 320 }}>
                 <Typography variant="body" component="div" align="center">
                 Нет данных
                 </Typography>
             </Container>
+            <ModalDialogs />
+            </>
         )};
 
     return (
@@ -201,29 +238,8 @@ const InvestmentDetail = ({ id, addHistory, addInOut }) => {
             </Table>
         </TableContainer>
         </Container>
-        
-        <DialogModal triggerToOpen={openHistory} 
-                     funcToCloseOk={handleAddHistory}
-                     funcToCloseCancel={handleCloseHistory}
-                     dialogTitle="Зафиксировать"
-                     dialogContentText="Введите сумму для фиксации на текущую дату"
-        />
 
-        <DialogModal triggerToOpen={openDeposit} 
-                     funcToCloseOk={handleAddDeposit}
-                     funcToCloseCancel={handleCloseDeposit}
-                     dialogTitle="Внести"
-                     dialogContentText="Введите вносимую сумму и комментарий"
-                     commentNeed
-        />
-
-        <DialogModal triggerToOpen={openCredit} 
-                     funcToCloseOk={handleAddCredit}
-                     funcToCloseCancel={handleCloseCredit}
-                     dialogTitle="Снять"
-                     dialogContentText="Введите снимаемую сумму и комментарий"
-                     commentNeed
-        />
+        <ModalDialogs />        
         </>
     );  
 }

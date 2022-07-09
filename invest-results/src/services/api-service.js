@@ -1,6 +1,19 @@
 import axios from "axios";
 
 export default class ApiService {
+
+    registerUser(data) {     
+      console.log(data) 
+      return axios({
+        method: 'post',
+          url: "/register",        
+          headers: {
+            "accept": "application/json"          
+        },
+        data: data 
+      })        
+    }
+
     getToken( {username, password }) {        
       return axios({
         method: 'post',
@@ -48,6 +61,18 @@ export default class ApiService {
         data: data 
       })        
     }
+
+    deactivateInvestment({ token, params }) {        
+      return axios({
+        method: 'delete',
+          url: "/users/investment_items/",
+        headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        params: params 
+      })
+    };
 
     getCategories({ token, params }) {
       return axios({
@@ -160,5 +185,5 @@ export default class ApiService {
         params: params 
       })
     };
-    
+
 }

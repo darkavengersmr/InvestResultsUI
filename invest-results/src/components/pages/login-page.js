@@ -26,21 +26,15 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (profile.token && profile.id) {
-      navigate('/investments/');      
-    }
-  }, [ navigate, profile.token, profile.id ])
-
   const handleClickRegister = useCallback(() => {    
     navigate('/register');
   }, [navigate]);
 
-  const handleClickLogin = useCallback(() => {    
+  const toLogin = useCallback(({ username, password }) => {    
     dispatch(tokenRequested());
     dispatch(profileRequested());
     
-    ApiService.getToken({ username: username, password: password })
+    ApiService.getToken({ username, password })
       .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
       .then((data) => { setCookie('investresults_token', data.payload);
                         return data;
@@ -59,8 +53,11 @@ const LoginPage = () => {
           }))
         }       
       })
-    
-  }, [ApiService, dispatch, navigate, password, setCookie, username]);
+  }, [ApiService, dispatch, navigate, setCookie]);
+
+  const handleClickLogin = useCallback(() => {       
+    toLogin({ username: username, password: password });
+  }, [password, toLogin, username]);
 
   const onLoginChange = useCallback((e) => {
     setUsername(e.target.value);    
@@ -69,6 +66,16 @@ const LoginPage = () => {
   const onPasswordChange = useCallback((e) => {
     setPassword(e.target.value);    
   }, []);
+
+  useEffect(() => {
+    if (profile.token && profile.id) {
+      navigate('/investments/');      
+    }
+    if (profile.username === 'demo') {
+      toLogin({ username: 'demo', password: 'demoP@$$w0rD' }); 
+    }
+  // eslint-disable-next-line
+  }, [ ])
 
   return (
       <>

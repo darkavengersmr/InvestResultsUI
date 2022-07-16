@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 
 import AppHeader from '../app-header';
 import { tokenLoaded, tokenRequested, 
-    profileLoaded, setNotification } from "../../redux-store/actions"
+         profileLoaded, setNotification } from "../../redux-store/actions"
 import { ApiServiceContext } from "../app-contexts";
 import { useInput } from '../../hooks';
 
@@ -27,33 +27,40 @@ const RegistrationPage = () => {
     const email = useInput('')
     const invite = useInput('')
 
-    const handleClickRegister = useCallback(() => {    
-        dispatch(tokenRequested());
-        ApiService.registerUser({ username: username.value,
-                                  email: email.value, 
-                                  password: password.value,                                   
-                                  invite: invite.value, 
-                                  is_active: true })        
-        .then(() => ApiService.getToken({ username: username.value, password: password.value })
-        .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
-        .then((data) => { setCookie('investresults_token', data.payload);
-                          return data;
-        })
-        .then((data) => ApiService.getUserProfile({ token: data.payload }))
-        .then((response) =>  {
-          dispatch(profileLoaded(response.data));
-          setCookie('investresults_user_id', response.data.id);
-          navigate('/help');
-        })      
-        .catch((error) => {
-          if (error.response.status === 401) {            
+    const handleClickRegister = useCallback(() => {
+        if (!username.value || !email.value || !password.value || !invite.value) {            
             dispatch(setNotification({
-              text: "Ошибка регистрации",
+              text: "не заполнены обязательные поля",
               type: "error"
             }))
-          }       
-        })
-        )
+          } 
+        else {
+            dispatch(tokenRequested());
+            ApiService.registerUser({ username: username.value,
+                                    email: email.value, 
+                                    password: password.value,                                   
+                                    invite: invite.value, 
+                                    is_active: true })        
+            .then(() => ApiService.getToken({ username: username.value, password: password.value })
+            .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
+            .then((data) => { setCookie('investresults_token', data.payload);
+                            return data;
+            }))
+            .then((data) => ApiService.getUserProfile({ token: data.payload }))
+            .then((response) =>  {
+                dispatch(profileLoaded(response.data));
+                setCookie('investresults_user_id', response.data.id);
+                navigate('/help');
+            })      
+            .catch((error) => {
+                console.log(`Ошибка регистрации ${error.response.status}`)            
+                dispatch(setNotification({
+                text: `Ошибка регистрации ${error.response.status}`,
+                type: "error"
+                }))            
+            })
+        }
+        
     
     }, [ApiService, dispatch, navigate, setCookie, email, invite, password, username]);
 

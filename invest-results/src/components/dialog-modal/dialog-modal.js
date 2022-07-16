@@ -10,6 +10,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import { useInput } from '../../hooks';
+import { useDispatch } from 'react-redux';
+import { setNotification } from '../../redux-store/actions';
 
 const DialogModal = ({ triggerToOpen, 
                        funcToCloseOk, 
@@ -18,6 +20,8 @@ const DialogModal = ({ triggerToOpen,
                        dialogContentText,
                        commentNeed                       
                     }) => {
+
+    const dispatch = useDispatch();
 
     const dateNow = useMemo(() => {
         const date = new Date();
@@ -37,8 +41,19 @@ const DialogModal = ({ triggerToOpen,
         })
     , [sum, comment, date])
 
+    const onSubmit = () => {
+        if (!sum.value || (commentNeed && !comment.value)) {
+            dispatch(setNotification({
+                text: "не заполнены обязательные поля",
+                type: "error"
+              }))
+        } else {
+            funcToCloseOk(funcToCloseOkArgs) 
+        }
+    }
+
     const onEnter = (e) => {
-        if (e.key === "Enter") { funcToCloseOk(funcToCloseOkArgs) }
+        if (e.key === "Enter") onSubmit()                     
     }
 
     return (
@@ -91,7 +106,7 @@ const DialogModal = ({ triggerToOpen,
         <DialogActions>
         <Button onClick={funcToCloseCancel}>Отмена</Button>
         <Button onKeyPress={onEnter} 
-                onClick={() => funcToCloseOk(funcToCloseOkArgs)}>{dialogTitle}</Button>
+                onClick={onSubmit}>{dialogTitle}</Button>
         </DialogActions>
     </Dialog>
     )

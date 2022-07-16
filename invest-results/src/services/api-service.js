@@ -2,8 +2,7 @@ import axios from "axios";
 
 export default class ApiService {
 
-    registerUser(data) {     
-      console.log(data) 
+    registerUser(data) {           
       return axios({
         method: 'post',
           url: "/register",        

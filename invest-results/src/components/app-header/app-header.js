@@ -67,7 +67,10 @@ function AppHeader({ name, contextMenuItems }) {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-    setState({ ...state, [anchor]: open });
+    if (profile.id) {
+      setState({ ...state, [anchor]: open });
+    }    
+  // eslint-disable-next-line
   }, [state]);
 
   return (
@@ -108,7 +111,9 @@ function AppHeader({ name, contextMenuItems }) {
       onClick={toggleDrawer("left", false)}
       onKeyDown={toggleDrawer("left", false)}
     >
-      <List>        
+    { profile.id && (
+      <>
+      <List>           
           <ListItem onClick={navigateToInvestment}>
             <ListItemButton>
               <ListItemIcon>
@@ -140,7 +145,7 @@ function AppHeader({ name, contextMenuItems }) {
               </ListItemIcon>
               <ListItemText primary="Ключевая ставка ЦБ" />
             </ListItemButton>
-          </ListItem>
+          </ListItem>          
       </List>
       <Divider />
       <List>
@@ -160,6 +165,7 @@ function AppHeader({ name, contextMenuItems }) {
               <ListItemText primary="Профиль" />
             </ListItemButton>
           </ListItem>
+          
           <ListItem onClick={navigateToHelp}>
             <ListItemButton>
               <ListItemIcon>
@@ -169,6 +175,8 @@ function AppHeader({ name, contextMenuItems }) {
             </ListItemButton>
           </ListItem>
       </List>
+      </>
+     )}
     </Box>
     </SwipeableDrawer>
     </>

@@ -31,29 +31,38 @@ const LoginPage = () => {
     navigate('/register');
   }, [navigate]);
 
-  const toLogin = useCallback(({ username, password }) => {    
-    dispatch(tokenRequested());
-    dispatch(profileRequested());
-    
-    ApiService.getToken({ username, password })
-      .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
-      .then((data) => { setCookie('investresults_token', data.payload);
-                        return data;
-      })
-      .then((data) => ApiService.getUserProfile({ token: data.payload }))
-      .then((response) =>  {
-        dispatch(profileLoaded(response.data));
-        setCookie('investresults_user_id', response.data.id);
-        navigate('/investments/');
-      })      
-      .catch((error) => {
-        if (error.response.status === 401) {            
-          dispatch(setNotification({
-            text: "Ошибка в имени пользователя или пароле",
-            type: "error"
-          }))
-        }       
-      })
+  const toLogin = useCallback(({ username, password }) => {
+    console.log(username, password)
+    if (!username || !password ) {            
+      dispatch(setNotification({
+        text: "не заполнены обязательные поля",
+        type: "error"
+      }))
+    } 
+    else {    
+      dispatch(tokenRequested());
+      dispatch(profileRequested());
+      
+      ApiService.getToken({ username, password })
+        .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
+        .then((data) => { setCookie('investresults_token', data.payload);
+                          return data;
+        })
+        .then((data) => ApiService.getUserProfile({ token: data.payload }))
+        .then((response) =>  {
+          dispatch(profileLoaded(response.data));
+          setCookie('investresults_user_id', response.data.id);
+          navigate('/investments/');
+        })      
+        .catch((error) => {
+          if (error.response.status === 401) {            
+            dispatch(setNotification({
+              text: "Ошибка в имени пользователя или пароле",
+              type: "error"
+            }))
+          }       
+        })
+      }
   }, [ApiService, dispatch, navigate, setCookie]);
 
   const handleClickLogin = useCallback(() => {       

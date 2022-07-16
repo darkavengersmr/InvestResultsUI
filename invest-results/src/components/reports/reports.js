@@ -19,6 +19,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+import { useInput } from '../../hooks'
+
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -29,23 +31,33 @@ ChartJS.register(
     Legend
 )
 
+const chartOptions = {
+  plugins: {
+      legend: {
+          position: 'bottom',
+      },
+  }
+  };
+
 const Reports = ({ report, id }) => {
 
-    const [investment, setInvestment] = useState('');
-    const [chartType, setChartType] = useState('1');
+  const [investment, setInvestment] = useState('');
+    const chartType = useInput('1');
 
     const navigate = useNavigate();
+
+    useEffect(() => {        
+      if (report.length>0) {            
+          id ? setInvestment(id) : navigate(`/reports/${report[0].id}`);
+      }       
+    }, [ report, id, navigate ])
 
     const handleChangeInvestment = useCallback((event) => {
         setInvestment(event.target.value);
         navigate(`/reports/${event.target.value}`);
     }, [navigate]);
 
-    const handleChangeChartType = useCallback((event) => {
-        setChartType(event.target.value);        
-    }, []);
-
-    const { plan, fact, index, labels, fact_proc, index_compare_proc } = useMemo(() => {
+    const { lineChartData1, lineChartData2 } = useMemo(() => {
         const labels = [];
 
         const plan = [];
@@ -76,73 +88,57 @@ const Reports = ({ report, id }) => {
                 index_compare_proc.push(report_data[0].ratio_deposit_index[date])
             }
         }
-        return { plan, fact, index, labels, fact_proc, index_compare_proc }
-    // eslint-disable-next-line    
-    }, [report, investment, id]);
 
-    useEffect(() => {        
-        if (report.length>0) {            
-            id ? setInvestment(id) : navigate(`/reports/${report[0].id}`);
+        const lineChartData1 = {
+          labels: labels,        
+          datasets: [
+            {
+              data: plan,
+              label: "план",
+              borderColor: "#0000ff",
+              fill: true,
+              lineTension: 0.5
+            },
+            {
+              data: fact,
+              label: "факт",
+              borderColor: "#00ff00",
+              fill: true,
+              lineTension: 0.5
+            },
+            {
+              data: index,
+              label: "индекс",
+              borderColor: "#ff0000",
+              fill: true,
+              lineTension: 0.5
+            },
+          ]
         }
-        else {
-            navigate(`/reports/`);
-        }        
-    }, [ report, id, navigate ])
 
-    const lineChartData1 = useMemo(() => ({
-        labels: labels,        
-        datasets: [
-          {
-            data: plan,
-            label: "план",
-            borderColor: "#0000ff",
-            fill: true,
-            lineTension: 0.5
-          },
-          {
-            data: fact,
-            label: "факт",
-            borderColor: "#00ff00",
-            fill: true,
-            lineTension: 0.5
-          },
-          {
-            data: index,
-            label: "индекс",
-            borderColor: "#ff0000",
-            fill: true,
-            lineTension: 0.5
-          },
-        ]
-      }), [plan, fact, index, labels]);
+        const lineChartData2 = {        
+          labels: labels,
+          datasets: [
+            {
+              data: index_compare_proc,
+              label: "% от индекса",
+              borderColor: "#0000ff",
+              fill: true,
+              lineTension: 0.5
+            },
+            {
+              data: fact_proc,
+              label: "% от вложений",
+              borderColor: "#00ff00",
+              fill: true,
+              lineTension: 0.5
+            }
+          ]
+        }
 
-      const lineChartData2 = useMemo(() => ({        
-        labels: labels,
-        datasets: [
-          {
-            data: index_compare_proc,
-            label: "% от индекса",
-            borderColor: "#0000ff",
-            fill: true,
-            lineTension: 0.5
-          },
-          {
-            data: fact_proc,
-            label: "% от вложений",
-            borderColor: "#00ff00",
-            fill: true,
-            lineTension: 0.5
-          }
-        ]
-      }), [index_compare_proc, fact_proc, labels]);
-
-    const chartOptions = useMemo(() => ({
-    plugins: {
-        legend: {
-            position: 'bottom',
-        },
-    }
-    }), []);
+        return { lineChartData1, lineChartData2 }
+    // eslint-disable-next-line    
+    }, [investment, id]);
 
     return (                        
         <Container sx={{ mt: "2rem", mb: "2rem", width: 360 }}>
@@ -170,10 +166,9 @@ const Reports = ({ report, id }) => {
                 <InputLabel id="demo-simple-select-label">Тип графика</InputLabel>
                 <Select
                 labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={chartType}
+                id="demo-simple-select"                
                 label="Age"
-                onChange={handleChangeChartType}
+                {...chartType}
                 >
                     <MenuItem value="1">Сумма</MenuItem>
                     <MenuItem value="2">Процент отклонения</MenuItem>
@@ -185,7 +180,7 @@ const Reports = ({ report, id }) => {
                 type="line"            
                 height={320}
                 options={chartOptions}
-                data={chartType === "1" ? lineChartData1 : lineChartData2}                
+                data={chartType.value === "1" ? lineChartData1 : lineChartData2}                
             />
 
         </Container>         

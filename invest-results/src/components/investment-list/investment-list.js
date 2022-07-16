@@ -14,26 +14,23 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
+import { useInput } from "../../hooks";
 
 const InvestmentList = ({ investments, categories, addInvestment }) => {
 
     const [ open, setOpen ] = useState(false);
-    const [ newInvestment, setNewInvestment ] = useState("");
-    const [ selectedCategoryId, selectCategoryId ] = useState("");
+    const newInvestment = useInput("");
+    const selectedCategoryId = useInput("");
 
     const handleClose = useCallback(() => {
         setOpen(false);
     }, []);
 
     const handleAdd = useCallback(() => {      
-        addInvestment({ description: newInvestment, category_id: selectedCategoryId });  
+        addInvestment({ description: newInvestment.value, category_id: selectedCategoryId.value });  
         setOpen(false);
     }, [addInvestment, newInvestment, selectedCategoryId]);
     
-    const handleChangeCategoryId = useCallback((event) => {
-        selectCategoryId(event.target.value);        
-    }, []);
-
     const dispatch = useDispatch();
 
     useEffect(() => { 
@@ -77,7 +74,7 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
                 type="text"
                 fullWidth
                 variant="standard"
-                onChange={(e) => setNewInvestment(e.target.value) }
+                {...newInvestment}
                 onKeyPress={onEnter}
             />
             <FormControl fullWidth sx={{ mt: "1rem" }}>
@@ -85,8 +82,7 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
                 <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={selectedCategoryId}
-                onChange={handleChangeCategoryId}
+                {...selectedCategoryId}                
                 >
                     {
                     categories.map((item) => {

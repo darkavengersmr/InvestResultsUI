@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { useCookies } from 'react-cookie';
@@ -11,14 +11,15 @@ import AppHeader from '../app-header';
 import { tokenLoaded, tokenRequested, 
          profileLoaded, profileRequested, setNotification } from "../../redux-store/actions"
 import { ApiServiceContext } from "../app-contexts";
+import { useInput } from '../../hooks';
 
 const LoginPage = () => {
 
   const ApiService = useContext(ApiServiceContext);
   const dispatch = useDispatch();
 
-  const [ username, setUsername ] = useState("");
-  const [ password, setPassword ] = useState("");
+  const username = useInput('')
+  const password = useInput('')
 
   const profile = useSelector((state) => state.profile);
 
@@ -56,16 +57,8 @@ const LoginPage = () => {
   }, [ApiService, dispatch, navigate, setCookie]);
 
   const handleClickLogin = useCallback(() => {       
-    toLogin({ username: username, password: password });
+    toLogin({ username: username.value, password: password.value });
   }, [password, toLogin, username]);
-
-  const onLoginChange = useCallback((e) => {
-    setUsername(e.target.value);    
-  }, []);
-
-  const onPasswordChange = useCallback((e) => {
-    setPassword(e.target.value);    
-  }, []);
 
   useEffect(() => {
     if (profile.token && profile.id) {
@@ -86,9 +79,9 @@ const LoginPage = () => {
                     margin="dense"                    
                     label="Логин"
                     type="text"
-                    fullWidth
+                    fullWidth                    
                     variant="standard"
-                    onChange={onLoginChange}
+                    {...username}
                 />
         <TextField
                     autoFocus
@@ -97,7 +90,7 @@ const LoginPage = () => {
                     type="password"
                     fullWidth
                     variant="standard"
-                    onChange={onPasswordChange}
+                    {...password}
                 />
         <Grid container                  
                   sx={{ mt: "2rem" }}

@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux'
 import Container from '@mui/material/Container';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,17 +12,73 @@ import Typography from '@mui/material/Typography';
 import InvestmentDetailItem from "../investment-detail-item"
 import DialogModal from '../dialog-modal';
 
+import Spinner from "../spinner"
+import ErrorIndicator from '../error-indicator';
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
 
-const InvestmentDetail = ({ id, addHistory, addInOut, deactivateInvestment, is_active }) => {
+const compute_investment_detail = (history, inout, id) => {
+    const investment_detail_item = {};
+    const investment_detail_total = {history: null, sum_in: 0, sum_out: 0};
+
+    history.forEach((element) => {        
+        if (element.investment_id === parseInt(id)) {
+            const date = element.date.slice(0,7);                
+            investment_detail_item[date] = {history: element.sum}
+            investment_detail_total.history = element.sum;
+        }
+    });
+    
+    inout.forEach((element) => {        
+        if (element.investment_id === parseInt(id)) {
+            const date = element.date.slice(0,7);                              
+            if (!(date in investment_detail_item)) {
+                investment_detail_item[date] = {history: null}
+            }
+            if (!investment_detail_item[date].sum_in) {
+                investment_detail_item[date].sum_in = 0;
+            }
+            if (!investment_detail_item[date].sum_out) {
+                investment_detail_item[date].sum_out = 0;
+            }
+            if (element.sum >= 0) {                                        
+                investment_detail_item[date].sum_in += element.sum;
+                investment_detail_total.sum_in += element.sum;
+            } else {
+                investment_detail_item[date].sum_out += -1 * element.sum;
+                investment_detail_total.sum_out += -1 * element.sum;
+            }                    
+        }
+    });
+
+    const investment_detail_item_sorted = Object.keys(investment_detail_item).sort().reduce(
+        (obj, key) => { 
+            obj[key] = investment_detail_item[key]; 
+            return obj;
+        }, {});
+
+    return { investment_detail_item: investment_detail_item_sorted, 
+             investment_detail_total };
+}
+
+const tableHeadStyle = { p: "4px", fontSize: "1rem" };
+const tableCellStyle = { p: "8px 1px 8px 1px", fontSize: "0.8rem" };
+
+const InvestmentDetail = ({ id, 
+                            deactivateInvestment, 
+                            is_active, 
+                            history,
+                            loadingHistory,
+                            errorHistory,
+                            addHistory, 
+                            inout, 
+                            loadingInOut, 
+                            errorInOut, 
+                            addInOut }) => {
 
     const [ openHistory, setOpenHistory ] = useState(false);
     const [ openDeposit, setOpenDeposit ] = useState(false);
     const [ openCredit, setOpenCredit ] = useState(false);
-
-    const history = useSelector((state) => state.history);
-    const inout = useSelector((state) => state.inout);
 
     const handleCloseHistory = useCallback(() => {
         setOpenHistory(false);
@@ -55,54 +110,10 @@ const InvestmentDetail = ({ id, addHistory, addInOut, deactivateInvestment, is_a
             setOpenCredit(false);
         }
     }, [addInOut]);
-
-    const { investment_detail_item, investment_detail_total } = useMemo(() => {
-
-        const investment_detail_item = {};
-        const investment_detail_total = {history: null, sum_in: 0, sum_out: 0};
-
-        history.forEach((element) => {        
-            if (element.investment_id === parseInt(id)) {
-                const date = element.date.slice(0,7);                
-                investment_detail_item[date] = {history: element.sum}
-                investment_detail_total.history = element.sum;
-            }
-        });
-        
-        inout.forEach((element) => {        
-            if (element.investment_id === parseInt(id)) {
-                const date = element.date.slice(0,7);                              
-                if (!(date in investment_detail_item)) {
-                    investment_detail_item[date] = {history: null}
-                }
-                if (!investment_detail_item[date].sum_in) {
-                    investment_detail_item[date].sum_in = 0;
-                }
-                if (!investment_detail_item[date].sum_out) {
-                    investment_detail_item[date].sum_out = 0;
-                }
-                if (element.sum >= 0) {                                        
-                    investment_detail_item[date].sum_in += element.sum;
-                    investment_detail_total.sum_in += element.sum;
-                } else {
-                    investment_detail_item[date].sum_out += -1 * element.sum;
-                    investment_detail_total.sum_out += -1 * element.sum;
-                }                    
-            }
-        });
-
-        const investment_detail_item_sorted = Object.keys(investment_detail_item).sort().reduce(
-            (obj, key) => { 
-              obj[key] = investment_detail_item[key]; 
-              return obj;
-            }, 
-            {}
-          );
-
-    return { investment_detail_item: investment_detail_item_sorted, 
-             investment_detail_total };
-   
-    }, [history, inout, id])
+    
+    const { investment_detail_item, investment_detail_total } = useMemo(() =>         
+        compute_investment_detail(history, inout, id)
+    , [history, inout, id])
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -129,7 +140,7 @@ const InvestmentDetail = ({ id, addHistory, addInOut, deactivateInvestment, is_a
             },
             {
                 description: "Отчет",
-                action: () => {
+                action: () => {                    
                     navigate(`/reports/${id}`);
                 }
             },
@@ -142,10 +153,7 @@ const InvestmentDetail = ({ id, addHistory, addInOut, deactivateInvestment, is_a
         ])); 
     }, [dispatch, id, navigate, is_active, deactivateInvestment])
 
-    const tableHeadStyle = useMemo(() => ({ p: "4px", fontSize: "1rem" }), []);
-    const tableCellStyle = useMemo(() => ({ p: "8px 1px 8px 1px", fontSize: "0.8rem" }), []);
-
-    const ModalDialogs = () => { 
+    const ModalDialogs = useCallback(() => { 
         return (
         <>
         <DialogModal triggerToOpen={openHistory} 
@@ -171,7 +179,16 @@ const InvestmentDetail = ({ id, addHistory, addInOut, deactivateInvestment, is_a
                      commentNeed
         />
         </>
-    )}
+    )}, [openHistory, openDeposit, openCredit, handleAddCredit, handleAddDeposit, handleAddHistory, 
+        handleCloseCredit, handleCloseDeposit, handleCloseHistory]);
+
+    if (loadingHistory || loadingInOut) {            
+        return <Spinner />
+    }
+
+    if (errorHistory || errorInOut) {            
+        return <ErrorIndicator />
+    }
 
     if (Object.keys(investment_detail_item).length === 0) {
         return (            

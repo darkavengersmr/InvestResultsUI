@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
@@ -11,6 +11,7 @@ import AppHeader from '../app-header';
 import { tokenLoaded, tokenRequested, 
     profileLoaded, setNotification } from "../../redux-store/actions"
 import { ApiServiceContext } from "../app-contexts";
+import { useInput } from '../../hooks';
 
 const RegistrationPage = () => {
 
@@ -21,36 +22,19 @@ const RegistrationPage = () => {
   
     const navigate = useNavigate();
 
-    const [ username, setUsername ] = useState("");
-    const [ password, setPassword ] = useState("");
-    const [ email, setEmail ] = useState("");
-    const [ invite, setInvite ] = useState("");
-
-    const onLoginChange = useCallback((e) => {
-        setUsername(e.target.value);    
-      }, []);
-    
-    const onPasswordChange = useCallback((e) => {
-    setPassword(e.target.value);    
-    }, []);
-
-    const onEmailChange = useCallback((e) => {
-        setEmail(e.target.value);    
-        }, []);
-
-    const onInviteChange = useCallback((e) => {
-        console.log(e.target.value)
-        setInvite(e.target.value);    
-        }, []);
+    const username = useInput('')
+    const password = useInput('')
+    const email = useInput('')
+    const invite = useInput('')
 
     const handleClickRegister = useCallback(() => {    
         dispatch(tokenRequested());
-        ApiService.registerUser({ username,
-                                  email, 
-                                  password,                                   
-                                  invite, 
+        ApiService.registerUser({ username: username.value,
+                                  email: email.value, 
+                                  password: password.value,                                   
+                                  invite: invite.value, 
                                   is_active: true })        
-        .then(() => ApiService.getToken({ username: username, password: password })
+        .then(() => ApiService.getToken({ username: username.value, password: password.value })
         .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
         .then((data) => { setCookie('investresults_token', data.payload);
                           return data;
@@ -59,7 +43,7 @@ const RegistrationPage = () => {
         .then((response) =>  {
           dispatch(profileLoaded(response.data));
           setCookie('investresults_user_id', response.data.id);
-          navigate('/investments/');
+          navigate('/help');
         })      
         .catch((error) => {
           if (error.response.status === 401) {            
@@ -89,7 +73,7 @@ const RegistrationPage = () => {
                             type="text"
                             fullWidth
                             variant="standard"
-                            onChange={onLoginChange}
+                            {...username}
                         />
             <TextField
                         autoFocus
@@ -98,7 +82,7 @@ const RegistrationPage = () => {
                         type="text"
                         fullWidth
                         variant="standard"
-                        onChange={onEmailChange}
+                        {...email}
                     />
             <TextField
                         autoFocus
@@ -107,7 +91,7 @@ const RegistrationPage = () => {
                         type="password"
                         fullWidth
                         variant="standard"
-                        onChange={onPasswordChange}
+                        {...password}
                     />
             <TextField
                         autoFocus
@@ -116,7 +100,7 @@ const RegistrationPage = () => {
                         type="password"
                         fullWidth
                         variant="standard"
-                        onChange={onInviteChange}
+                        {...invite}
                     />
     
             <Grid container                  

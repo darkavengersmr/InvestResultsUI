@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -8,6 +8,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+
+import { useInput } from '../../hooks';
 
 const DialogModal = ({ triggerToOpen, 
                        funcToCloseOk, 
@@ -24,26 +26,19 @@ const DialogModal = ({ triggerToOpen,
             String(date.getDate()).padStart(2, '0');
     }, [])
 
-    const [ sum, setSum ] = useState("");
-    const [ comment, setComment ] = useState("");
-    const [ date, setDate ] = useState(dateNow + "T12:00:00.000Z");
+    const sum = useInput('')
+    const comment = useInput('')
+    const date = useInput(dateNow)
 
-    const onSumChange = useCallback((e) => {
-        setSum(e.target.value);    
-    }, []);
-
-    const onCommentChange = useCallback((e) => {
-    setComment(e.target.value);    
-    }, []);
-
-    const onDateChange = useCallback((e) => {
-        setDate(e.target.value + "T12:00:00.000Z");           
-        }, []);
-
-    
+    const funcToCloseOkArgs = useMemo(() => 
+        ({ sum: sum.value, 
+            comment: comment.value, 
+            date: date.value+"T12:00:00.000Z" 
+        })
+    , [sum, comment, date])
 
     const onEnter = (e) => {
-        if (e.key === "Enter") { funcToCloseOk({ sum, comment, date }) }
+        if (e.key === "Enter") { funcToCloseOk(funcToCloseOkArgs) }
     }
 
     return (
@@ -58,24 +53,24 @@ const DialogModal = ({ triggerToOpen,
         <TextField
             autoFocus
             margin="dense"
-            id="name"
+            id="sum"
             label="Сумма"
             type="number"
             fullWidth
             variant="standard"
-            onChange={onSumChange}
+            {...sum}
             onKeyPress={onEnter}
         />
         { commentNeed && 
         <TextField
             autoFocus
             margin="dense"
-            id="name"
+            id="comment"
             label="Комментарий"
             type="text"
             fullWidth
             variant="standard"
-            onChange={onCommentChange}
+            {...comment}
             onKeyPress={onEnter}
             
         />
@@ -85,7 +80,7 @@ const DialogModal = ({ triggerToOpen,
         label="Дата"
         type="date"
         defaultValue={dateNow}
-        onChange={onDateChange}
+        onChange={date.onChange}
         onKeyPress={onEnter}
         sx={{ mt: "1rem" }}
         InputLabelProps={{
@@ -96,7 +91,7 @@ const DialogModal = ({ triggerToOpen,
         <DialogActions>
         <Button onClick={funcToCloseCancel}>Отмена</Button>
         <Button onKeyPress={onEnter} 
-                onClick={() => funcToCloseOk({ sum, comment, date })}>{dialogTitle}</Button>
+                onClick={() => funcToCloseOk(funcToCloseOkArgs)}>{dialogTitle}</Button>
         </DialogActions>
     </Dialog>
     )

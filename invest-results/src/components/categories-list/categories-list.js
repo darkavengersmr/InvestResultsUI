@@ -14,20 +14,21 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
+import { useInput } from "../../hooks";
 
 import CategoriesListItem from "../categories-list-item"
 
 const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
 
     const [ open, setOpen ] = useState(false);
-    const [ newCategory, setNewCategory ] = useState("");    
+    const newCategory = useInput("");    
 
     const handleClose = useCallback(() => {
         setOpen(false);
     }, []);
 
     const handleAdd = useCallback(() => {
-        onAddCategory(newCategory)
+        onAddCategory(newCategory.value)
         setOpen(false);
     }, [onAddCategory, newCategory]);
 
@@ -86,7 +87,7 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
                 type="text"
                 fullWidth
                 variant="standard"
-                onChange={(e) => setNewCategory(e.target.value) }
+                {...newCategory}
                 onKeyPress={onEnter}
             />
             </DialogContent>

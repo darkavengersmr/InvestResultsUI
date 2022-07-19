@@ -11,7 +11,7 @@ import useCategories from "./useCategories";
 function fetchInvestments({ token, params }) {        
     return axios({
       method: 'get',
-        url: "/users/investment_items/",
+        url: "/api/users/investment_items/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -23,7 +23,7 @@ function fetchInvestments({ token, params }) {
 function createInvestment({ token, params, data }) {
     return axios({
       method: 'post',
-        url: "/users/investment_items/",
+        url: "/api/users/investment_items/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -36,7 +36,7 @@ function createInvestment({ token, params, data }) {
 function fetchDeactivateInvestment({ token, params }) {        
     return axios({
       method: 'delete',
-        url: "/users/investment_items/",
+        url: "/api/users/investment_items/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token

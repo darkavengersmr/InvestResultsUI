@@ -10,7 +10,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import InvestmentDetailItem from "../investment-detail-item"
-import DialogModal from '../dialog-modal';
+import { DialogModal, ConfirmModal } from '../dialog-modal';
 
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
@@ -80,6 +80,18 @@ const InvestmentDetail = ({ id,
     const [ openDeposit, setOpenDeposit ] = useState(false);
     const [ openCredit, setOpenCredit ] = useState(false);
 
+    const [ openConfirm, setOpenConfirm ] = useState(false);    
+
+    const handleConfirmOk = useCallback((is_active) => {        
+        deactivateInvestment(is_active)
+        setOpenConfirm(false);
+    }, [deactivateInvestment]);
+
+    const handleConfirmCancel = useCallback(() => {        
+        setOpenConfirm(false);
+    }, []);
+
+
     const handleCloseHistory = useCallback(() => {
         setOpenHistory(false);
     }, []);
@@ -145,9 +157,9 @@ const InvestmentDetail = ({ id,
                 }
             },
             {
-                description:  is_active ? 'В архив' : 'Вернуть из архива',
+                description: is_active ? 'В архив' : 'Вернуть из архива',
                 action: () => {
-                    deactivateInvestment(is_active);
+                    setOpenConfirm(true);
                 }
             }
         ])); 
@@ -256,7 +268,14 @@ const InvestmentDetail = ({ id,
         </TableContainer>
         </Container>
 
-        <ModalDialogs />        
+        <ModalDialogs /> 
+
+        <ConfirmModal triggerToOpen={openConfirm} 
+                      funcToCloseOk={() => handleConfirmOk(is_active)}
+                      funcToCloseCancel={handleConfirmCancel}
+                      dialogTitle={is_active ? 'В архив' : 'Вернуть из архива'}
+                      dialogContentText={is_active ? 'Сделать инвестицию архивной?' : 'Вернуть инвестицию из архива?'}
+        />       
         </>
     );  
 }

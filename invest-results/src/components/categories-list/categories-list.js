@@ -1,4 +1,7 @@
 import React, { useCallback, useState, useEffect } from "react";
+import { useDispatch } from 'react-redux'
+import { setContextMenu } from "../../redux-store/actions"
+
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -12,16 +15,34 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-import { useDispatch } from 'react-redux'
-import { setContextMenu } from "../../redux-store/actions"
 import { useInput } from "../../hooks";
-
+import { ConfirmModal } from "../dialog-modal";
 import CategoriesListItem from "../categories-list-item"
 
 const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
 
+    const dispatch = useDispatch();
+
     const [ open, setOpen ] = useState(false);
+    
+    const [ openConfirm, setOpenConfirm ] = useState(false);
+    const [ idDelCategory, setIdDelCategory ] = useState();
+        
     const newCategory = useInput("");    
+
+    const onDelCategoryWithConfirm = useCallback((id) => {        
+        setIdDelCategory(id);
+        setOpenConfirm(true);
+    }, []);
+
+    const handleConfirmOk = useCallback((idDelCategory) => {        
+        onDelCategory(idDelCategory);
+        setOpenConfirm(false);
+    }, [onDelCategory]);
+
+    const handleConfirmCancel = useCallback(() => {        
+        setOpenConfirm(false);
+    }, []);
 
     const handleClose = useCallback(() => {
         setOpen(false);
@@ -31,8 +52,6 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
         onAddCategory(newCategory.value)
         setOpen(false);
     }, [onAddCategory, newCategory]);
-
-    const dispatch = useDispatch();
 
     useEffect(() => { 
         dispatch(setContextMenu([
@@ -62,7 +81,7 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
                                             key={category.id} 
                                             category_item={category}
                                             id={category.id} 
-                                            onDelCategory={onDelCategory} />
+                                            onDelCategory={onDelCategoryWithConfirm} />
                                 )
                             })
                         }            
@@ -96,6 +115,13 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
             <Button onClick={handleAdd} onKeyPress={onEnter}>Добавить</Button>
             </DialogActions>
         </Dialog>
+
+        <ConfirmModal triggerToOpen={openConfirm} 
+                      funcToCloseOk={() => handleConfirmOk(idDelCategory)}
+                      funcToCloseCancel={handleConfirmCancel}
+                      dialogTitle="Удаление категории"
+                      dialogContentText="Вы действительно хотите удалить эту категорию?"
+        />
         </>
     );
     

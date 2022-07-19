@@ -9,7 +9,7 @@ import { historyRequested, historyLoaded, historyError, historyAdd,
 function fetchHistory({ token, params }) {
     return axios({
       method: 'get',
-        url: "/users/investment_history/",
+        url: "/api/users/investment_history/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -21,7 +21,7 @@ function fetchHistory({ token, params }) {
   function createHistory({ token, params, data }) {
     return axios({
       method: 'post',
-        url: "/users/investment_history/",
+        url: "/api/users/investment_history/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token

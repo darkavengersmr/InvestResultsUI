@@ -32,7 +32,6 @@ const LoginPage = () => {
   }, [navigate]);
 
   const toLogin = useCallback(({ username, password }) => {
-    console.log(username, password)
     if (!username || !password ) {            
       dispatch(setNotification({
         text: "не заполнены обязательные поля",
@@ -45,13 +44,17 @@ const LoginPage = () => {
       
       ApiService.getToken({ username, password })
         .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
-        .then((data) => { setCookie('investresults_token', data.payload);
+        .then((data) => { setCookie('investresults_token', 
+                                    data.payload, 
+                                    {maxAge: 15552000});
                           return data;
         })
         .then((data) => ApiService.getUserProfile({ token: data.payload }))
         .then((response) =>  {
           dispatch(profileLoaded(response.data));
-          setCookie('investresults_user_id', response.data.id);
+          setCookie('investresults_user_id', 
+                     response.data.id, 
+                     {maxAge: 15552000});
           navigate('/investments/');
         })      
         .catch((error) => {

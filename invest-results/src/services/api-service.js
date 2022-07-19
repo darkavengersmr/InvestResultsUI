@@ -5,7 +5,7 @@ export default class ApiService {
     registerUser(data) {           
       return axios({
         method: 'post',
-          url: "/register",        
+          url: "/api/register",        
           headers: {
             "accept": "application/json"          
         },
@@ -16,7 +16,7 @@ export default class ApiService {
     getToken( {username, password }) {        
       return axios({
         method: 'post',
-        url: '/token',
+        url: '/api/token',
         headers: {
             "accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -28,7 +28,7 @@ export default class ApiService {
     getUserProfile({ token } ) {
       return axios({
         method: 'get',
-        url: '/user',
+        url: '/api/user',
         headers: {
             "accept": "application/json",
             "Authorization": "Bearer " + token

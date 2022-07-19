@@ -9,7 +9,7 @@ import { reportLoaded, reportRequested, reportError,
 function fetchJSONReports({ token, params }) {        
       return axios({
         method: 'get',
-          url: "/users/reports/json/",
+          url: "/api/users/reports/json/",
         headers: {
             "accept": "application/json",
             "Authorization": "Bearer " + token
@@ -21,7 +21,7 @@ function fetchJSONReports({ token, params }) {
 function fetchXLSXReports({ token, params }) {
     return axios({
     method: 'get',
-    url: "/users/reports/xlsx/",
+    url: "/api/users/reports/xlsx/",
     responseType: "blob",
     headers: {
         "accept": "application/json",

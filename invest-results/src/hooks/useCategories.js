@@ -9,7 +9,7 @@ import { categoriesLoaded, categoriesRequested, categoriesError,
 function fetchCategories({ token, params }) {
     return axios({
       method: 'get',
-        url: "/users/categories/",
+        url: "/api/users/categories/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -21,7 +21,7 @@ function fetchCategories({ token, params }) {
   function createCategory({ token, params, data }) {
     return axios({
       method: 'post',
-        url: "/users/categories/",
+        url: "/api/users/categories/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -34,7 +34,7 @@ function fetchCategories({ token, params }) {
   function deleteCategory({ token, params, }) {
     return axios({
       method: 'delete',
-        url: "/users/categories/",
+        url: "/api/users/categories/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -102,7 +102,7 @@ const useCategories = () => {
 
     useEffect(() => {
         getCategories();
-    // eslint-disable-next-line        
+    // eslint-disable-next-line     
     }, []);
 
     return { categories, loading, error, getCategories, addCategory, delCategory };

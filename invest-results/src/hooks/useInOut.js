@@ -9,7 +9,7 @@ import { inOutRequested, inOutLoaded, inOutError, inOutAdd,
 function fetchInOut({ token, params }) {
     return axios({
       method: 'get',
-        url: "/users/investment_inout/",
+        url: "/api/users/investment_inout/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -21,7 +21,7 @@ function fetchInOut({ token, params }) {
   function createInOut({ token, params, data }) {
     return axios({
       method: 'post',
-        url: "/users/investment_inout/",
+        url: "/api/users/investment_inout/",
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token

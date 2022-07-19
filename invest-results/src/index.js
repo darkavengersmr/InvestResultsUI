@@ -9,6 +9,8 @@ import ApiService from "./services/api-service"
 import { ApiServiceContext } from "./components/app-contexts";
 import store from "./redux-store/store"
 
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
 const apiService = new ApiService();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -23,3 +25,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </Provider>,
   
 );
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.register();

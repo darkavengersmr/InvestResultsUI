@@ -1,25 +1,85 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Мои.Инвестиции",
+  "name": "Мои.Инвестиции",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
+      "src": "/icons/logo192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "/icons/logo512.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "/icons/android-icon-192x192-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/apple-icon-180x180-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "/icons/apple-icon-152x152-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "152x152"
+    },
+    {
+      "src": "/icons/apple-icon-144x144-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "/icons/apple-icon-120x120-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "120x120"
+    },
+    {
+      "src": "/icons/apple-icon-114x114-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "114x114"
+    },
+    {
+      "src": "/icons/favicon-96x96-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/icons/apple-icon-76x76-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "76x76"
+    },
+    {
+      "src": "/icons/apple-icon-72x72-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "/icons/apple-icon-60x60-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "60x60"
+    },
+    {
+      "src": "/icons/apple-icon-57x57-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "57x57"
+    },
+    {
+      "src": "/icons/favicon-32x32-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "/icons/favicon-16x16-seochecker-manifest-1817.png",
+      "type": "image/png",
+      "sizes": "16x16"
     }
   ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#000000"
 }

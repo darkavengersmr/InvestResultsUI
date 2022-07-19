@@ -10,7 +10,7 @@ import { profileLoaded, profileRequested, profileError,
 function getUserProfile({ token } ) {
     return axios({
       method: 'get',
-      url: '/user',
+      url: '/api/user',
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -63,7 +63,8 @@ const useProfile = () => {
     useEffect(() => {
         getProfile();
         logOutToContextMenu();
-    }, [getProfile, logOutToContextMenu]);
+    // eslint-disable-next-line
+    }, []);
 
     return { profile, loading, error, getProfile};
 }

@@ -6,7 +6,7 @@ import InvestmentDetail from '../investment-detail';
 import Spinner from "../spinner"
 import ErrorIndicator from '../error-indicator';
 
-import { useInvestments, useHistory, useInOut } from '../../hooks';
+import { useInvestments, useHistory, useInOut, useReport } from '../../hooks';
 
 const InvestmentDetailPage = () => {
 
@@ -15,6 +15,7 @@ const InvestmentDetailPage = () => {
     const { investments, loading, error, deactivateInvestment} = useInvestments(id);
     const { history, loading: loadingHistory, error: errorHistory, addHistory } = useHistory(id)
     const { inout, loading: loadingInOut, error: errorInOut, addInOut } = useInOut(id)
+    const { report, loadingReport, errorReport } = useReport();
 
     const { description, is_active } = useMemo(() => {
 
@@ -55,6 +56,9 @@ const InvestmentDetailPage = () => {
                               loadingInOut={loadingInOut} 
                               errorInOut={errorInOut}
                               addInOut={addInOut}
+                              report={report}
+                              loadingReport={loadingReport}
+                              errorReport={errorReport}
             />
         </>
     )

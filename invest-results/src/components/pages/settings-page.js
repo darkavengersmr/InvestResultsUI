@@ -54,9 +54,9 @@ const SettingsPage = () => {
     return (
         <div>
             <AppHeader name="Настройки" />
-            <Container sx={{ mt: "2rem", width: 360 }}>
+            <Container sx={{ mt: "2rem", width: "100%" }} maxWidth="sm">
                 <Grid container sx={{ mt: "1rem" }}>
-                    <Grid sx={{ width: 240 }} >
+                    <Grid sx={{ width: "80%" }} >
                         <Typography variant="body" 
                                     component="div" 
                                     sx={{ mt: "8px", ml: "8px" }}
@@ -64,7 +64,7 @@ const SettingsPage = () => {
                         Темная тема
                         </Typography>
                     </Grid>
-                    <Grid sx={{ width: 60 }}>
+                    <Grid sx={{ width: "20%" }}>
                         <Switch sx={{ ml: "20px" }} 
                                 checked={checkedTheme} 
                                 onChange={handleChangeTheme} 
@@ -72,7 +72,7 @@ const SettingsPage = () => {
                     </Grid>                    
                 </Grid>
                 <Grid container sx={{ mt: "1rem" }}>
-                    <Grid sx={{ width: 240 }} >
+                    <Grid sx={{ width: "80%" }} >
                         <Typography variant="body" 
                                     component="div" 
                                     sx={{ mt: "8px", ml: "8px" }}
@@ -80,7 +80,7 @@ const SettingsPage = () => {
                         Показывать только активные
                         </Typography>
                     </Grid>
-                    <Grid sx={{ width: 60 }}>
+                    <Grid sx={{ width: "20%" }}>
                         <Switch sx={{ ml: "20px" }} 
                                 checked={only_active_visible} 
                                 onChange={handleChangeOnlyActive} 

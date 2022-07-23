@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import InvestmentListItem from "../investment-list-item"
 import TextField from '@mui/material/TextField';
@@ -12,6 +12,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
 import { useInput } from "../../hooks";
@@ -51,14 +52,14 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
     }
 
     return (
-        <>
-        <Container sx={{ width: 360 }}>
+        <>            
+        <Grid container justifyContent="center" columnSpacing={4}>
             {
             investments.map((investment) => {
                 return <InvestmentListItem key={investment.id} investment={investment} />
                 })
             }
-        </Container>
+        </Grid>
 
         <Dialog open={open} 
                 onClose={handleClose}

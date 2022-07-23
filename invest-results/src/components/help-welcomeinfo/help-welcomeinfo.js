@@ -19,7 +19,7 @@ const HelpWelcomeInfo = () => {
     return (
         <>
             <AppHeader name="Справка" /> 
-            <Container sx={{ width: 360, mt: "1rem", mb: "2rem" }}>
+            <Container sx={{ width: '100%', mt: "1rem", mb: "2rem" }} maxWidth="md">
                 
                 <Typography variant="h5" component="div" sx={{ mt: "1rem" }}>
                 Мои.Инвестиции

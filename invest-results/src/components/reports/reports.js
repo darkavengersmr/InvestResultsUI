@@ -13,7 +13,7 @@ import {
   } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 
-import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -141,40 +141,41 @@ const Reports = ({ report, id }) => {
     }, [investment, id]);
 
     return (                        
-        <Container sx={{ mt: "2rem", mb: "2rem", width: 360 }}>
-            <Box sx={{ minWidth: 120, mb: "1rem" }}>
-            <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Инвестиция</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={investment}
-                label="Age"
-                onChange={handleChangeInvestment}
-                >
-                {
-                report.map((item) => {
-                    return <MenuItem key={item.id} value={item.id}>{item.description}</MenuItem>
-                })
-                }          
-                </Select>
-            </FormControl>
-            </Box>
-
-            <Box sx={{ minWidth: 120, mb: "2rem" }}>
-            <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Тип графика</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"                
-                label="Age"
-                {...chartType}
-                >
-                    <MenuItem value="1">Сумма</MenuItem>
-                    <MenuItem value="2">Процент отклонения</MenuItem>
-                </Select>
-            </FormControl>
-            </Box>
+        <Container sx={{ mt: "1rem", mb: "2rem", width: "100%" }} maxWidth="sm">
+            <Grid container  justifyContent='center' columnSpacing={2}>
+              <Grid item sx={{ mb: "1rem", width: "280px" }}>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Инвестиция</InputLabel>
+                    <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={investment}
+                    label="Age"
+                    onChange={handleChangeInvestment}
+                    >
+                    {
+                    report.map((item) => {
+                        return <MenuItem key={item.id} value={item.id}>{item.description}</MenuItem>
+                    })
+                    }          
+                    </Select>
+                </FormControl>
+              </Grid>
+              <Grid item sx={{ mb: "1rem", width: "280px" }}>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Тип графика</InputLabel>
+                    <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"                
+                    label="Age"
+                    {...chartType}
+                    >
+                        <MenuItem value="1">Сумма</MenuItem>
+                        <MenuItem value="2">Процент отклонения</MenuItem>
+                    </Select>
+                </FormControl>
+            </Grid>
+            </Grid>
 
             <Line
                 type="line"            

@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,6 +9,7 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import InvestmentDetailItem from "../investment-detail-item"
 import { DialogModal, ConfirmModal } from '../dialog-modal';
@@ -17,9 +19,15 @@ import ErrorIndicator from '../error-indicator';
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
 
-const compute_investment_detail = (history, inout, id) => {
+const compute_investment_detail = (history, inout, id, report) => {
     const investment_detail_item = {};
-    const investment_detail_total = {history: null, sum_in: 0, sum_out: 0};
+    const investment_detail_total = {history: null, 
+                                     sum_in: 0, 
+                                     sum_out: 0, 
+                                     sum_plan: 0, 
+                                     sum_delta_rub: 0,
+                                     sum_delta_proc: 0,
+                                     ratio_deposit_index: 0};
 
     history.forEach((element) => {        
         if (element.investment_id === parseInt(id)) {
@@ -51,6 +59,38 @@ const compute_investment_detail = (history, inout, id) => {
         }
     });
 
+    report.forEach((report_element) => {               
+        if (report_element.id === parseInt(id)) {            
+            for (let element in report_element.sum_plan) {                
+                if (element in investment_detail_item) {
+                    investment_detail_item[element].sum_plan = report_element.sum_plan[element];
+                    investment_detail_total.sum_plan = report_element.sum_plan[element];
+                }                
+            }
+
+            for (let element in report_element.sum_delta_rub) {                
+                if (element in investment_detail_item) {
+                    investment_detail_item[element].sum_delta_rub = report_element.sum_delta_rub[element];
+                    investment_detail_total.sum_delta_rub = report_element.sum_delta_rub[element];
+                }                
+            }
+
+            for (let element in report_element.sum_delta_proc) {                
+                if (element in investment_detail_item) {
+                    investment_detail_item[element].sum_delta_proc = report_element.sum_delta_proc[element];
+                    investment_detail_total.sum_delta_proc = report_element.sum_delta_proc[element];
+                }                
+            }
+
+            for (let element in report_element.ratio_deposit_index) {                
+                if (element in investment_detail_item) {
+                    investment_detail_item[element].ratio_deposit_index = report_element.ratio_deposit_index[element];
+                    investment_detail_total.ratio_deposit_index = report_element.ratio_deposit_index[element];
+                }                
+            }
+        }
+    });
+
     const investment_detail_item_sorted = Object.keys(investment_detail_item).sort().reduce(
         (obj, key) => { 
             obj[key] = investment_detail_item[key]; 
@@ -60,9 +100,6 @@ const compute_investment_detail = (history, inout, id) => {
     return { investment_detail_item: investment_detail_item_sorted, 
              investment_detail_total };
 }
-
-const tableHeadStyle = { p: "4px", fontSize: "1rem" };
-const tableCellStyle = { p: "8px 1px 8px 1px", fontSize: "0.8rem" };
 
 const InvestmentDetail = ({ id, 
                             deactivateInvestment, 
@@ -74,7 +111,14 @@ const InvestmentDetail = ({ id,
                             inout, 
                             loadingInOut, 
                             errorInOut, 
-                            addInOut }) => {
+                            addInOut,
+                            report,
+                            loadingReport,
+                            errorReport }) => {
+
+    const theme = useTheme();
+    
+    const portraitScreen = useMediaQuery('(orientation: portrait)');
 
     const [ openHistory, setOpenHistory ] = useState(false);
     const [ openDeposit, setOpenDeposit ] = useState(false);
@@ -124,8 +168,8 @@ const InvestmentDetail = ({ id,
     }, [addInOut]);
     
     const { investment_detail_item, investment_detail_total } = useMemo(() =>         
-        compute_investment_detail(history, inout, id)
-    , [history, inout, id])
+        compute_investment_detail(history, inout, id, report)
+    , [history, inout, id, report])
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -194,18 +238,25 @@ const InvestmentDetail = ({ id,
     )}, [openHistory, openDeposit, openCredit, handleAddCredit, handleAddDeposit, handleAddHistory, 
         handleCloseCredit, handleCloseDeposit, handleCloseHistory]);
 
-    if (loadingHistory || loadingInOut) {            
+    const tableHeadStyle = useMemo(() => ({ p: "12px 1px 12px 1px", 
+                                            fontSize: "0.9rem", 
+                                            background: theme.palette.mode === 'dark' 
+                                                        ? "#000000" 
+                                                        : "#DDDDDD" 
+    }), [theme.palette.mode]);
+
+    if (loadingHistory || loadingInOut || loadingReport) {            
         return <Spinner />
     }
 
-    if (errorHistory || errorInOut) {            
+    if (errorHistory || errorInOut || errorReport) {            
         return <ErrorIndicator />
     }
 
     if (Object.keys(investment_detail_item).length === 0) {
         return (            
             <>
-            <Container sx={{ mt: "1rem", width: 320 }}>
+            <Container sx={{ mt: "1rem", width: '100%' }} maxWidth="sm">
                 <Typography variant="body" component="div" align="center">
                 Нет данных
                 </Typography>
@@ -216,18 +267,14 @@ const InvestmentDetail = ({ id,
 
     return (
         <>
-        <Container sx={{ mt: "1rem", width: 320 }}>
+        <Container sx={{ mt: "1rem", width: '100%'}} maxWidth={portraitScreen ? 'xs' : 'xl'}>
         <TableContainer component={Paper} sx={{ p: "4px" }}>
-            <Table aria-label="simple table">
+            <Table aria-label="customized table" sx={{ minWidth: !portraitScreen ? 600 : 320 }}>
                 <TableBody>
-                    <TableRow>
+                    <TableRow>                        
                         <TableCell sx={tableHeadStyle} 
-                                    align="center">
+                                    align="left">
                             Дата
-                        </TableCell>
-                        <TableCell sx={tableHeadStyle} 
-                                    align="right">
-                                        Сумма
                         </TableCell>
                         <TableCell sx={tableHeadStyle}
                                     align="right">
@@ -236,32 +283,92 @@ const InvestmentDetail = ({ id,
                         <TableCell sx={tableHeadStyle}
                                     align="right">
                                         Расход
-                        </TableCell>
+                        </TableCell> 
+
+                        {!portraitScreen 
+                        ? <TableCell sx={tableHeadStyle} align="right">План</TableCell> 
+                        : false
+                        }
+                        
+                        <TableCell sx={tableHeadStyle} 
+                                    align="right">
+                                        Факт
+                        </TableCell>                       
+
+                        {!portraitScreen 
+                        ? <TableCell sx={tableHeadStyle} align="right">Прирост</TableCell> 
+                        : false
+                        }
+
+                        {!portraitScreen 
+                        ? <TableCell sx={tableHeadStyle} align="right">Прирост</TableCell> 
+                        : false
+                        }
+
+                        {!portraitScreen 
+                        ? <TableCell sx={tableHeadStyle} align="right">ОтВклада</TableCell> 
+                        : false
+                        }
                     </TableRow>
                         {                
                         Object.keys(investment_detail_item).map(function(key, index) {                    
                             return <InvestmentDetailItem 
                                         key={key} 
                                         date={key} 
-                                        data={investment_detail_item[key]}/>
+                                        data={investment_detail_item[key]}
+                                        portraitScreen={portraitScreen}
+                                        bg={index % 2 === 0 ? 'odd' : 'noodd'} />
                             })
                         }
                     <TableRow>
                         <TableCell sx={tableHeadStyle} 
-                                    align="center">
+                                    align="left">
                             Итого
                         </TableCell>
-                        <TableCell sx={tableCellStyle} align="right">
-                            {typeof investment_detail_total.history === 'number' ? investment_detail_total.history.toLocaleString() : "-"}
-                                 </TableCell>
-                        <TableCell sx={tableCellStyle}
+                        <TableCell sx={tableHeadStyle}
                                     align="right">
                                         {investment_detail_total.sum_in.toLocaleString()}
                         </TableCell>
-                        <TableCell sx={tableCellStyle}
+                        <TableCell sx={tableHeadStyle}
                                     align="right">
                                         {investment_detail_total.sum_out.toLocaleString()}
+                        </TableCell> 
+
+                        {!portraitScreen
+                        ? <TableCell sx={tableHeadStyle}
+                                    align="right">
+                                        {investment_detail_total.sum_plan.toLocaleString()}
+                          </TableCell>
+                        : false
+                        }
+
+                        <TableCell sx={tableHeadStyle} align="right">
+                            {typeof investment_detail_total.history === 'number' ? investment_detail_total.history.toLocaleString() : "-"}
                         </TableCell>
+                       
+                        {!portraitScreen
+                        ? <TableCell sx={tableHeadStyle}
+                                    align="right">
+                                        {investment_detail_total.sum_delta_rub.toLocaleString()}
+                          </TableCell>
+                        : false
+                        }
+
+                        {!portraitScreen
+                        ? <TableCell sx={tableHeadStyle}
+                                    align="right">
+                                        {investment_detail_total.sum_delta_proc.toLocaleString()+"%"}
+                          </TableCell>
+                        : false
+                        }
+
+                        {!portraitScreen    
+                        ? <TableCell sx={tableHeadStyle}
+                                    align="right">
+                                        {investment_detail_total.ratio_deposit_index.toLocaleString()+"%"}
+                          </TableCell>
+                        : false
+                        }
                     </TableRow>                        
                 </TableBody>
             </Table>

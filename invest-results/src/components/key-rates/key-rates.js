@@ -93,7 +93,7 @@ const KeyRates = ({ report, addKeyRate }) => {
 
     return (                        
         <>
-        <Container sx={{ mt: "2rem", mb: "2rem", width: 360 }}>
+        <Container sx={{ mt: "2rem", mb: "2rem", width: "100%" }} maxWidth="xs">
             
             <Line
                 type="line"            

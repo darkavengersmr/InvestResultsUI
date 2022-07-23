@@ -70,7 +70,7 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
 
     return (
         <>
-        <Container sx={{ mt: "1rem", width: 360 }}>
+        <Container sx={{ mt: "1rem", width: "100%" }} maxWidth="sm">
         <TableContainer component={Paper}>
             <Table aria-label="simple table">
                 <TableBody>

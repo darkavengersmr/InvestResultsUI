@@ -5,6 +5,7 @@ import useInvestments from "./useInvestments";
 import useHistory from "./useHistory";
 import useInOut from "./useInOut";
 import useInput from "./useInput";
+import useKeyRates from "./useKeyRates";
 
 export {
     useProfile,
@@ -13,5 +14,6 @@ export {
     useInOut,
     useCategories, 
     useReport,
+    useKeyRates,
     useInput
 };

@@ -18,17 +18,19 @@ import { useInput } from "../../hooks";
 
 const InvestmentList = ({ investments, categories, addInvestment }) => {
 
-    const [ open, setOpen ] = useState(false);
-    const newInvestment = useInput("");
-    const selectedCategoryId = useInput("");
+    const [ open, setOpen ] = useState(false);    
+    const newInvestment = useInput("", "notNullText");
+    const selectedCategoryId = useInput("", "required");
 
     const handleClose = useCallback(() => {
         setOpen(false);
     }, []);
 
-    const handleAdd = useCallback(() => {      
-        addInvestment({ description: newInvestment.value, category_id: selectedCategoryId.value });  
+    const handleAdd = useCallback(() => {
+        if (selectedCategoryId.value) {
+            addInvestment({ description: newInvestment.value, category_id: selectedCategoryId.value });  
         setOpen(false);
+        }        
     }, [addInvestment, newInvestment, selectedCategoryId]);
     
     const dispatch = useDispatch();
@@ -66,8 +68,7 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
             <DialogContentText>
                 Введите название инвестиции и укажите ее категорию
             </DialogContentText>
-            <TextField
-                autoFocus
+            <TextField                
                 margin="dense"
                 id="name"
                 label="Название"

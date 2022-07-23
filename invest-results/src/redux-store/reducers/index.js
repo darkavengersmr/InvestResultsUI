@@ -25,6 +25,7 @@ const initialState = {
     inout: [],
     categories: [],
     report: [],
+    key_rates: [],
     only_active_visible: only_active_visible,
     loading: false,
     error: null,
@@ -233,6 +234,28 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 report: action.payload,
+                loading: false,
+                error: null
+            };
+
+        case 'FETCH_KEYRATES_REQUEST':
+            return {
+                ...state,
+                key_rates: [],
+                loading: true,
+                error: null
+            };
+        case 'FETCH_KEYRATES_FAILURE':
+            return {
+                ...state,
+                key_rates: [],
+                loading: false,
+                error: action.payload
+            };
+        case 'FETCH_KEYRATES_SUCCESS':            
+            return {
+                ...state,
+                key_rates: action.payload,
                 loading: false,
                 error: null
             };

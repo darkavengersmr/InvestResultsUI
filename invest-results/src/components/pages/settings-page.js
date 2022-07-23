@@ -21,20 +21,28 @@ const SettingsPage = () => {
     const handleChangeTheme = useCallback(() => {        
         if (theme === 'light') {
             dispatch(setTheme('dark'));
-            setCookie('investresults_theme', 'dark');
+            setCookie('investresults_theme', 
+                      'dark',  
+                      {maxAge: 60*60*24*365*5});
         } else {
             dispatch(setTheme('light'));
-            setCookie('investresults_theme', 'light')
+            setCookie('investresults_theme', 
+                      'light', 
+                      {maxAge: 60*60*24*365*5})
         }        
     }, [theme, dispatch, setCookie])
 
     const handleChangeOnlyActive = useCallback(() => {
         if (only_active_visible) {
             dispatch(setOnlyActiveVisible(false));
-            setCookie('investresults_only_active_visible', false);
+            setCookie('investresults_only_active_visible', 
+                      false, 
+                      {maxAge: 60*60*24*365*5});
         } else {
             dispatch(setOnlyActiveVisible(true));
-            setCookie('investresults_only_active_visible', true);
+            setCookie('investresults_only_active_visible', 
+                      true, 
+                      {maxAge: 60*60*24*365*5});
         } 
     }, [only_active_visible, dispatch, setCookie])
 

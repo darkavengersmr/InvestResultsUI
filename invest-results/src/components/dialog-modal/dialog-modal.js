@@ -30,8 +30,8 @@ const DialogModal = ({ triggerToOpen,
             String(date.getDate()).padStart(2, '0');
     }, [])
 
-    const sum = useInput('')
-    const comment = useInput('')
+    const sum = useInput('', 'positiveNumber')
+    const comment = useInput('', 'notNullText')
     const date = useInput(dateNow)
 
     const funcToCloseOkArgs = useMemo(() => 
@@ -65,8 +65,7 @@ const DialogModal = ({ triggerToOpen,
         <DialogContentText>
             {dialogContentText}
         </DialogContentText>
-        <TextField
-            autoFocus
+        <TextField            
             margin="dense"
             id="sum"
             label="Сумма"
@@ -77,8 +76,7 @@ const DialogModal = ({ triggerToOpen,
             onKeyPress={onEnter}
         />
         { commentNeed && 
-        <TextField
-            autoFocus
+        <TextField            
             margin="dense"
             id="comment"
             label="Комментарий"

@@ -1,23 +1,15 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux'
+import React from 'react';
 import AppHeader from "../app-header"
 import Spinner from "../spinner"
-import { setContextMenu } from "../../redux-store/actions"
 
 import ErrorIndicator from '../error-indicator';
-import { useReport } from '../../hooks';
+import { useKeyRates } from '../../hooks';
 import KeyRates from '../key-rates';
 
 const KeyRatesPage = () => {
 
-    const dispatch = useDispatch();
-    const { report, loading, error } = useReport();
+    const { key_rates, loading, error, addKeyRate } = useKeyRates();
 
-    useEffect(() => { 
-        dispatch(setContextMenu([]));
-    // eslint-disable-next-line
-    }, [])
-    
     if (loading) {            
         return <Spinner />
     }
@@ -29,7 +21,7 @@ const KeyRatesPage = () => {
     return (
         <div>
             <AppHeader name="Ключевая ставка ЦБ"  />            
-            <KeyRates report={report}/>
+            <KeyRates report={key_rates} addKeyRate={addKeyRate}/>
         </div>
     )
 };

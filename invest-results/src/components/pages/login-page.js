@@ -18,8 +18,8 @@ const LoginPage = () => {
   const ApiService = useContext(ApiServiceContext);
   const dispatch = useDispatch();
 
-  const username = useInput('')
-  const password = useInput('')
+  const username = useInput('', 'notNullText')
+  const password = useInput('', 'password')
 
   const profile = useSelector((state) => state.profile);
 
@@ -46,7 +46,7 @@ const LoginPage = () => {
         .then((response) =>  dispatch(tokenLoaded(response.data.access_token)))
         .then((data) => { setCookie('investresults_token', 
                                     data.payload, 
-                                    {maxAge: 15552000});
+                                    {maxAge: 60*60*24*365*0.5});
                           return data;
         })
         .then((data) => ApiService.getUserProfile({ token: data.payload }))
@@ -54,7 +54,7 @@ const LoginPage = () => {
           dispatch(profileLoaded(response.data));
           setCookie('investresults_user_id', 
                      response.data.id, 
-                     {maxAge: 15552000});
+                     {maxAge: 60*60*24*365*5});
           navigate('/investments/');
         })      
         .catch((error) => {
@@ -87,7 +87,6 @@ const LoginPage = () => {
       <AppHeader name="Мои.Инвестиции" />
       <Container sx={{ mt: "2rem", width: 320 }}>
       <TextField
-                    autoFocus
                     margin="dense"                    
                     label="Логин"
                     type="text"
@@ -96,7 +95,6 @@ const LoginPage = () => {
                     {...username}
                 />
         <TextField
-                    autoFocus
                     margin="dense"                    
                     label="Пароль"
                     type="password"

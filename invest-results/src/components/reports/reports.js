@@ -42,7 +42,7 @@ const chartOptions = {
 const Reports = ({ report, id }) => {
 
   const [investment, setInvestment] = useState('');
-    const chartType = useInput('1');
+    const chartType = useInput('1', '');
 
     const navigate = useNavigate();
 

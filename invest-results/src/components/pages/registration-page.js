@@ -22,10 +22,10 @@ const RegistrationPage = () => {
   
     const navigate = useNavigate();
 
-    const username = useInput('')
-    const password = useInput('')
-    const email = useInput('')
-    const invite = useInput('')
+    const username = useInput('', 'notNullText')
+    const password = useInput('', 'password')
+    const email = useInput('', 'email')
+    const invite = useInput('', 'notNullText')
 
     const handleClickRegister = useCallback(() => {
         if (!username.value || !email.value || !password.value || !invite.value) {            
@@ -74,7 +74,6 @@ const RegistrationPage = () => {
         <AppHeader name="Мои.Инвестиции" />     
         <Container sx={{ mt: "2rem", width: 320 }}>
             <TextField
-                            autoFocus
                             margin="dense"                    
                             label="Логин"
                             type="text"
@@ -83,7 +82,6 @@ const RegistrationPage = () => {
                             {...username}
                         />
             <TextField
-                        autoFocus
                         margin="dense"                    
                         label="Email"
                         type="text"
@@ -92,7 +90,6 @@ const RegistrationPage = () => {
                         {...email}
                     />
             <TextField
-                        autoFocus
                         margin="dense"                    
                         label="Пароль"
                         type="password"
@@ -101,7 +98,6 @@ const RegistrationPage = () => {
                         {...password}
                     />
             <TextField
-                        autoFocus
                         margin="dense"                    
                         label="Приглашение"
                         type="password"

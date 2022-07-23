@@ -189,6 +189,27 @@ const setOnlyActiveVisible = (newSetting) => {
     }
 }
 
+const keyRatesLoaded = (newKeyRates) => {
+    return {
+        type: 'FETCH_KEYRATES_SUCCESS',
+        payload: newKeyRates
+    }
+}
+
+const keyRatesRequested = () => {
+    return {
+        type: 'FETCH_KEYRATES_REQUEST'
+    }
+}
+
+const keyRatesError = (error) => {
+    return {
+        type: 'FETCH_KEYRATES_FAILURE',
+        payload: error
+    }
+}
+
+
 export {
     
     investmentRequested,
@@ -220,6 +241,10 @@ export {
     reportRequested,
     reportLoaded,
     reportError,
+
+    keyRatesRequested,
+    keyRatesLoaded,
+    keyRatesError,
 
     userLogOut,
     setTheme,

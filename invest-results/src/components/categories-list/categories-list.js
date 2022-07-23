@@ -28,7 +28,7 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
     const [ openConfirm, setOpenConfirm ] = useState(false);
     const [ idDelCategory, setIdDelCategory ] = useState();
         
-    const newCategory = useInput("");    
+    const newCategory = useInput("", "notNullText");    
 
     const onDelCategoryWithConfirm = useCallback((id) => {        
         setIdDelCategory(id);

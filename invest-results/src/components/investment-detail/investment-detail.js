@@ -120,7 +120,7 @@ const InvestmentDetail = ({ id,
         if (sum > 0 && comment.length > 0) {
             addInOut({ sum: -sum, comment, date });
             setOpenCredit(false);
-        }
+        } 
     }, [addInOut]);
     
     const { investment_detail_item, investment_detail_total } = useMemo(() =>         

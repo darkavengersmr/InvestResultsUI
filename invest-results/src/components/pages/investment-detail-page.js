@@ -96,7 +96,7 @@ const InvestmentDetailPage = () => {
     const { investments, loading: loadingInvestments, error: errorInvestments, deactivateInvestment} = useInvestments(id);
     const { history, loading: loadingHistory, error: errorHistory, addHistory } = useHistory(id)
     const { inout, loading: loadingInOut, error: errorInOut, addInOut } = useInOut(id)
-    const { report, loadingReport, errorReport } = useReport();
+    const { report, loadingReport, errorReport, getJSONReport } = useReport();
 
     const { description, is_active } = useMemo(() => {
 
@@ -136,6 +136,7 @@ const InvestmentDetailPage = () => {
                               addInOut={addInOut}                              
                               loadingReport={loadingReport}
                               errorReport={errorReport}
+                              getJSONReport={getJSONReport}
             />
         </>
     )

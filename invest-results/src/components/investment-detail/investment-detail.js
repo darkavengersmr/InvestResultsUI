@@ -33,7 +33,8 @@ const InvestmentDetail = memo(({ id,
                             errorInOut, 
                             addInOut,                            
                             loadingReport,
-                            errorReport }) => {
+                            errorReport,
+                            getJSONReport }) => {
 
     const theme = useTheme();
     
@@ -61,8 +62,9 @@ const InvestmentDetail = memo(({ id,
 
     const handleAddHistory = useCallback(({sum, date}) => {        
         addHistory({sum, date});
+        getJSONReport();
         setOpenHistory(false);
-    }, [addHistory]);
+    }, [addHistory, getJSONReport]);
 
     const handleCloseDeposit = useCallback(() => {
         setOpenDeposit(false);
@@ -71,9 +73,10 @@ const InvestmentDetail = memo(({ id,
     const handleAddDeposit = useCallback(({sum, comment, date}) => {
         if (sum > 0 && comment.length > 0) {
             addInOut({ sum, comment, date });
+            getJSONReport();
             setOpenDeposit(false);
         }   
-    }, [addInOut]);
+    }, [addInOut, getJSONReport]);
 
     const handleCloseCredit = useCallback(() => {
         setOpenCredit(false);
@@ -82,9 +85,10 @@ const InvestmentDetail = memo(({ id,
     const handleAddCredit = useCallback(({sum, comment, date}) => {
         if (sum > 0 && comment.length > 0) {
             addInOut({ sum: -sum, comment, date });
+            getJSONReport();
             setOpenCredit(false);
         } 
-    }, [addInOut]);
+    }, [addInOut, getJSONReport]);
     
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -118,7 +122,7 @@ const InvestmentDetail = memo(({ id,
             {
                 description: is_active ? 'В архив' : 'Вернуть из архива',
                 action: () => {
-                    setOpenConfirm(true);
+                    setOpenConfirm(true);                                        
                 }
             }
         ])); 

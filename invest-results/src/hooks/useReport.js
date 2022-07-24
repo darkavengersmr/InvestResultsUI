@@ -63,7 +63,6 @@ const useReport = () => {
     }, []);
 
     const getXLSXReport = useCallback(() => {
-        if (window.location.pathname.indexOf('report')>0) {
             dispatch(setContextMenu([
                 {
                     description: "Отчет в Excel",
@@ -84,13 +83,11 @@ const useReport = () => {
                     }
                 }             
             ]))
-        }
     // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
-        getJSONReport();
-        getXLSXReport();
+        getJSONReport();        
     // eslint-disable-next-line
     }, []);
 

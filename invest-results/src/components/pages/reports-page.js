@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import AppHeader from "../app-header"
 import Reports from '../reports';
@@ -10,7 +10,9 @@ import { useReport } from '../../hooks';
 const ReportsPage = () => {
     
     const { id } = useParams();
-    const { report, loading, error } = useReport();
+    const { report, loading, error, getXLSXReport } = useReport();
+
+    useEffect(() => getXLSXReport(), [ getXLSXReport ])
 
     if (loading) {            
         return <Spinner />

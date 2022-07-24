@@ -9,6 +9,7 @@ Frontend сервиса "Мои.Инвестиции". Используется React/Redux/Material UI/Chart.js
 - история оценки стоимости на дату (выполняются пользователем с необходимой ему периодичностью)
 - история пополнений и снятий (пополнение брокерского счета, арендные платежи от недвижимости, ее ремонт/мелкий ремонт, покупка криптовалюты и т.п.)
 - отчеты в json и xlsx в разрезе инвестиционных инструментов (история соотношения оценочной стоимости к затратам с учетом пополнений/снятий, история соотношения к индексу "ЕслиНаВклад", опирающегося на ключевую ставку ЦБ и т.д.)
+- PWA приложение и десктопный режим
 
 Backend здесь https://github.com/darkavengersmr/InvestResults
 
@@ -16,3 +17,4 @@ Backend здесь https://github.com/darkavengersmr/InvestResults
 ![alt text](invest-results/screenshots/ui_2.jpg "InvestResultsUI2")
 ![alt text](invest-results/screenshots/ui_3.jpg "InvestResultsUI3")
 ![alt text](invest-results/screenshots/ui_4.jpg "InvestResultsUI4")
+![alt text](invest-results/screenshots/ui_5.jpg "InvestResultsUI5")

@@ -28,25 +28,10 @@ ChartJS.register(
     Legend
 )
 
-const KeyRates = ({ report, addKeyRate }) => {
+const KeyRates = ({ labels, key_rates, addKeyRate }) => {
 
     const [ openAddKeyRate, setOpenAddKeyRate ] = useState(false);
     
-    const { labels, key_rates } = useMemo(() => {
-
-        let labels = [];
-        let key_rates = [];
-
-        if (report.length>0) {
-            const reportSortedByDate = report.sort((a, b) => a.date > b.date ? 1 : -1);
-            labels = reportSortedByDate.map((el) => el.date.slice(0, 7));
-            key_rates = reportSortedByDate.map((el) => el.key_rate);;    
-        }
-                            
-        return { labels, key_rates }
-    // eslint-disable-next-line    
-    }, [report]);    
-
     const dispatch = useDispatch();
 
     useEffect(() => {        

@@ -1,7 +1,4 @@
-import React, { useCallback } from "react";
-import { useDispatch } from 'react-redux'
-import { useNavigate } from "react-router-dom";
-import { useCookies } from 'react-cookie';
+import React from "react";
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
@@ -12,21 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
-import { userLogOut } from "../../redux-store/actions";
-
-const UserProfile = ({ profile }) => {
-    
-    const dispatch = useDispatch()
-    const navigate = useNavigate();
-    const [, , removeCookie] = useCookies();
-
-    const logOut = useCallback(() => {
-        dispatch(userLogOut());
-        removeCookie('investresults_token');
-        removeCookie('investresults_user_id');
-        navigate('/login');         
-    }, [dispatch, navigate, removeCookie]);
-        
+const UserProfile = ({ profile, logOut }) => {
+            
     return (                        
         <Container sx={{ mt: "1rem", width: "100%" }} maxWidth="sm">
         <TableContainer component={Paper}>

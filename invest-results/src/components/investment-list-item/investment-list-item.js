@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, memo } from "react";
 import { useNavigate } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 
-const InvestmentListItem = ({ investment }) => {
+const InvestmentListItem = memo(({ investment }) => {
 
     const { id, description, sum, category, proc, is_active } = investment;
 
@@ -60,6 +60,6 @@ const InvestmentListItem = ({ investment }) => {
         </Grid>
         </>
     );
-};
+})
 
 export default InvestmentListItem;

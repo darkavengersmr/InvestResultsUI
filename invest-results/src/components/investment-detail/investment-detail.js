@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, memo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
@@ -19,7 +19,7 @@ import ErrorIndicator from '../error-indicator';
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
 
-const InvestmentDetail = ({ id,
+const InvestmentDetail = memo(({ id,
                             investment_detail_item,
                             investment_detail_total,
                             deactivateInvestment, 
@@ -89,7 +89,7 @@ const InvestmentDetail = ({ id,
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => {        
+    useEffect(() => {              
         dispatch(setContextMenu([
             {
                 description: "Зафиксировать сумму",
@@ -300,6 +300,6 @@ const InvestmentDetail = ({ id,
         />       
         </>
     );  
-}
+})
 
 export default InvestmentDetail;

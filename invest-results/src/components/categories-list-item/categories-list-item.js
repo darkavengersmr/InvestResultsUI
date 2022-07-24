@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const CategoriesListItem = ({ category_item, onDelCategory }) => {
+const CategoriesListItem = memo(({ category_item, onDelCategory }) => {
     const { category, id } = useMemo(() => category_item, [category_item]);    
     return (
         <TableRow>            
@@ -17,6 +17,6 @@ const CategoriesListItem = ({ category_item, onDelCategory }) => {
             </TableCell>
         </TableRow>
     );
-};
+})
 
 export default CategoriesListItem;

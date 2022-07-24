@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import { useDispatch } from 'react-redux'
 
 import Typography from '@mui/material/Typography';
@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import AppHeader from '../app-header';
 import { setContextMenu } from "../../redux-store/actions"
 
-const HelpWelcomeInfo = () => { 
+const HelpWelcomeInfo = memo(() => { 
 
     const dispatch = useDispatch();
 
@@ -63,6 +63,6 @@ const HelpWelcomeInfo = () => {
         
         </>
     )
-};
+})
 
 export default HelpWelcomeInfo;

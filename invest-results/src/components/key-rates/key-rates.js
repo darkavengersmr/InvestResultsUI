@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useCallback } from "react";
+import React, { useMemo, useEffect, useState, useCallback, memo } from "react";
 import { useDispatch } from 'react-redux'
 
 import { setContextMenu } from "../../redux-store/actions"
@@ -28,7 +28,7 @@ ChartJS.register(
     Legend
 )
 
-const KeyRates = ({ labels, key_rates, addKeyRate }) => {
+const KeyRates = memo(({ labels, key_rates, addKeyRate }) => {
 
     const [ openAddKeyRate, setOpenAddKeyRate ] = useState(false);
     
@@ -98,6 +98,6 @@ const KeyRates = ({ labels, key_rates, addKeyRate }) => {
         </>
     );
     
-}
+})
 
 export default KeyRates;

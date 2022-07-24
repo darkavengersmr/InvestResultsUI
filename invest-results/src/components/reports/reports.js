@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from '@mui/material/Container';
 import {
@@ -39,7 +39,7 @@ const chartOptions = {
   }
   };
 
-const Reports = ({ report, id }) => {
+const Reports = memo(({ report, id }) => {
 
   const [investment, setInvestment] = useState('');
     const chartType = useInput('1', '');
@@ -187,6 +187,6 @@ const Reports = ({ report, id }) => {
         </Container>         
     );
     
-}
+})
 
 export default Reports;

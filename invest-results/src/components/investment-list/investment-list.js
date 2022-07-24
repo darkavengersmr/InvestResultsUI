@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, memo } from "react";
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import InvestmentListItem from "../investment-list-item"
@@ -17,7 +17,7 @@ import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
 import { useInput } from "../../hooks";
 
-const InvestmentList = ({ investments, categories, addInvestment }) => {
+const InvestmentList = memo(({ investments, categories, addInvestment }) => {
 
     const [ open, setOpen ] = useState(false);    
     const newInvestment = useInput("", "notNullText");
@@ -101,6 +101,6 @@ const InvestmentList = ({ investments, categories, addInvestment }) => {
         </Dialog>
         </>
     );
-}
+})
 
 export default InvestmentList;

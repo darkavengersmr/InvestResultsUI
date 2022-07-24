@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, memo } from "react";
 import { useDispatch } from 'react-redux'
 import { setContextMenu } from "../../redux-store/actions"
 
@@ -19,7 +19,7 @@ import { useInput } from "../../hooks";
 import { ConfirmModal } from "../dialog-modal";
 import CategoriesListItem from "../categories-list-item"
 
-const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
+const CategoriesList = memo(({ categories, onAddCategory, onDelCategory }) => {
 
     const dispatch = useDispatch();
 
@@ -125,6 +125,6 @@ const CategoriesList = ({ categories, onAddCategory, onDelCategory }) => {
         </>
     );
     
-}
+})
 
 export default CategoriesList;

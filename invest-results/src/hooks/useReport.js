@@ -63,26 +63,28 @@ const useReport = () => {
     }, []);
 
     const getXLSXReport = useCallback(() => {
-        dispatch(setContextMenu([
-            {
-                description: "Отчет в Excel",
-                action: () => {                     
-                    fetchXLSXReports({ token: profile.token,
-                                       params: { user_id: profile.id } })
-                    .then((response) => {
-                        const url = window.URL.createObjectURL(new Blob([response.data]));
-                        const link = document.createElement("a");
-                        link.href = url;
-                        let date = new Date();
-                        let filename = 'investresults' + date.toISOString().split('T')[0] + ".xlsx";
-                        link.setAttribute("download", filename);
-                        document.body.appendChild(link);
-                        link.click();
-                    })
-                    .catch((error) => onError(error));
-                }
-            }            
-        ]));
+        if (window.location.pathname.indexOf('report')>0) {
+            dispatch(setContextMenu([
+                {
+                    description: "Отчет в Excel",
+                    action: () => {                     
+                        fetchXLSXReports({ token: profile.token,
+                                        params: { user_id: profile.id } })
+                        .then((response) => {
+                            const url = window.URL.createObjectURL(new Blob([response.data]));
+                            const link = document.createElement("a");
+                            link.href = url;
+                            let date = new Date();
+                            let filename = 'investresults' + date.toISOString().split('T')[0] + ".xlsx";
+                            link.setAttribute("download", filename);
+                            document.body.appendChild(link);
+                            link.click();
+                        })
+                        .catch((error) => onError(error));
+                    }
+                }             
+            ]))
+        }
     // eslint-disable-next-line
     }, [])
 

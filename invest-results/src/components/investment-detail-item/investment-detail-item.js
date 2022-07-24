@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 import { useTheme } from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 
-const InvestmentListItem = ({ data, date, portraitScreen, bg }) => {    
+const InvestmentListItem = memo(({ data, date, portraitScreen, bg }) => {    
     const { history, 
             sum_in, 
             sum_out, 
@@ -79,6 +79,6 @@ const InvestmentListItem = ({ data, date, portraitScreen, bg }) => {
         </TableRow>  
     );
        
-};
+})
 
 export default InvestmentListItem;

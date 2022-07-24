@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
-const UserProfile = ({ profile, logOut }) => {
+const UserProfile = memo(({ profile, logOut }) => {
             
     return (                        
         <Container sx={{ mt: "1rem", width: "100%" }} maxWidth="sm">
@@ -38,6 +38,6 @@ const UserProfile = ({ profile, logOut }) => {
         </Container>            
     );
     
-}
+})
 
 export default UserProfile;

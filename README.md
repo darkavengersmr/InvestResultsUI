@@ -13,6 +13,8 @@ Frontend сервиса "Мои.Инвестиции". Используется React/Redux/Material UI/Chart.js
 
 Backend здесь https://github.com/darkavengersmr/InvestResults
 
+![alt text](invest-results/screenshots/ui_0.gif "InvestResultsUI0")
+
 ![alt text](invest-results/screenshots/ui_1.jpg "InvestResultsUI1")
 ![alt text](invest-results/screenshots/ui_2.jpg "InvestResultsUI2")
 ![alt text](invest-results/screenshots/ui_3.jpg "InvestResultsUI3")
